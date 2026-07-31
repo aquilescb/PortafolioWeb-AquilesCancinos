@@ -11,6 +11,7 @@ import type { Route } from "./+types/root";
 import { Footer } from "./components/layout/footer";
 import { Header } from "./components/layout/header";
 import { SkipLink } from "./components/layout/skip-link";
+import { useLocale } from "./i18n/use-locale";
 import "./app.css";
 
 export const links: Route.LinksFunction = () => [
@@ -36,8 +37,10 @@ export const links: Route.LinksFunction = () => [
 const themeInitScript = `(function(){try{var t=localStorage.getItem("theme");var d=t==="dark"||(!t&&window.matchMedia("(prefers-color-scheme: dark)").matches);if(d){document.documentElement.classList.add("dark")}}catch(e){}})();`;
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const locale = useLocale();
+
   return (
-    <html lang="en">
+    <html lang={locale}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
