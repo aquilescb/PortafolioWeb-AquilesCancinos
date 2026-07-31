@@ -1,0 +1,4 @@
+{
+  "redirects": [{ "source": "/", "destination": "/es", "permanent": false }],
+  "rewrites": [{ "source": "/(.*)", "destination": "/__spa-fallback.html" }]
+}
