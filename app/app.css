@@ -1,16 +1,136 @@
 @import "tailwindcss";
 
+/* Manual, class-based dark mode: an inline script in root.tsx sets `.dark`
+   on <html> before paint, based on stored preference or system default. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@font-face {
+  font-family: "Fraunces";
+  font-style: normal;
+  /* Optical size axis is pinned (not shipped) to keep the file small; see
+     docs/font-subsetting.md for the subsetting recipe. */
+  font-weight: 300 700;
+  font-display: swap;
+  src: url("/fonts/fraunces-variable.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("/fonts/inter-variable.woff2") format("woff2");
+}
+
 @theme {
+  --font-display: "Fraunces", ui-serif, Georgia, "Times New Roman", serif;
   --font-sans:
     "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
     "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+  /* Editorial-technical palette: off-white paper / ink, one accent colour.
+     Contrast verified (WCAG 2.2 AA, >=4.5:1): ink 16.5:1, accent 4.81:1
+     (light) and 5.90:1 (dark) against their respective backgrounds. */
+  --color-paper: #faf9f6;
+  --color-paper-dark: #141414;
+  --color-ink: #1a1a1a;
+  --color-ink-dark: #e8e6e1;
+  --color-accent: #b5502b;
+  --color-accent-dark: #d97757;
 }
 
-html,
-body {
-  @apply bg-white dark:bg-gray-950;
+@layer base {
+  :root {
+    color-scheme: light;
+  }
 
-  @media (prefers-color-scheme: dark) {
+  :root.dark {
     color-scheme: dark;
+  }
+
+  html {
+    @apply bg-paper text-ink;
+  }
+
+  html.dark {
+    @apply bg-paper-dark text-ink-dark;
+  }
+
+  body {
+    font-family: var(--font-sans);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+  }
+
+  /* Every interactive element gets a visible, consistent focus ring instead
+     of relying on (or removing) the browser default. */
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  .dark :focus-visible {
+    outline-color: var(--color-accent-dark);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  /* Long-form prose (case studies, milestone bodies). Deliberately hand
+     written instead of pulling in a typography plugin: the ruleset is small
+     and content-specific enough that a dependency isn't justified yet. */
+  .prose-editorial {
+    max-width: 72ch;
+    line-height: 1.7;
+  }
+
+  .prose-editorial > * + * {
+    margin-top: 1.25em;
+  }
+
+  .prose-editorial h2 {
+    @apply text-2xl font-medium tracking-tight;
+    margin-top: 2em;
+  }
+
+  .prose-editorial h3 {
+    @apply text-xl font-medium tracking-tight;
+    margin-top: 1.75em;
+  }
+
+  .prose-editorial a {
+    @apply text-accent underline decoration-1 underline-offset-2;
+  }
+
+  .dark .prose-editorial a {
+    @apply text-accent-dark;
+  }
+
+  .prose-editorial ul,
+  .prose-editorial ol {
+    padding-left: 1.5em;
+  }
+
+  .prose-editorial ul {
+    list-style: disc;
+  }
+
+  .prose-editorial ol {
+    list-style: decimal;
   }
 }
