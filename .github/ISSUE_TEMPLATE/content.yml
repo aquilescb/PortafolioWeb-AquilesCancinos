@@ -1,0 +1,47 @@
+name: Content entry
+description: Track the information needed before publishing a new content entry.
+title: "content: "
+labels: ["content"]
+body:
+  - type: dropdown
+    id: entity
+    attributes:
+      label: Entity type
+      options:
+        - Project
+        - Course or certification
+        - Education
+        - Experience
+        - Milestone, recognition or press
+    validations:
+      required: true
+
+  - type: textarea
+    id: facts
+    attributes:
+      label: Verified facts
+      description: Only real, verifiable information. Leave blank what you cannot confirm.
+      placeholder: |
+        - Role:
+        - Organization:
+        - Dates:
+        - Stack:
+        - Outcome (verifiable):
+    validations:
+      required: true
+
+  - type: input
+    id: evidence
+    attributes:
+      label: External evidence URL
+      description: Repository, demo, verification link, press article or video.
+
+  - type: checkboxes
+    id: readiness
+    attributes:
+      label: Ready to publish
+      options:
+        - label: Spanish text written
+        - label: English text written
+        - label: Images reviewed for sensitive data
+        - label: Private repositories are not linked
