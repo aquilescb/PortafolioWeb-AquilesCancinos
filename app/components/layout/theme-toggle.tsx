@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from "react";
+import { useTranslation } from "~/i18n/use-translation";
 
 type Theme = "light" | "dark";
 
@@ -36,6 +37,7 @@ function applyTheme(theme: Theme) {
 
 export function ThemeToggle() {
   const theme = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  const t = useTranslation();
 
   function toggle() {
     applyTheme(theme === "dark" ? "light" : "dark");
@@ -47,7 +49,7 @@ export function ThemeToggle() {
       onClick={toggle}
       aria-pressed={theme === "dark"}
       aria-label={
-        theme === "dark" ? "Switch to light theme" : "Switch to dark theme"
+        theme === "dark" ? t.theme.switchToLight : t.theme.switchToDark
       }
       className="text-ink/70 hover:text-ink dark:text-ink-dark/70 dark:hover:text-ink-dark inline-flex h-9 w-9 items-center justify-center rounded-sm"
     >

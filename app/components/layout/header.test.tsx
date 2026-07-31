@@ -6,18 +6,28 @@ import { axe } from "vitest-axe";
 import { Header } from "./header";
 
 describe("Header", () => {
-  it("links the wordmark to the home route", () => {
-    const Stub = createRoutesStub([{ path: "/", Component: Header }]);
-    render(<Stub initialEntries={["/"]} />);
+  it("links the wordmark to the locale-aware home route", () => {
+    const Stub = createRoutesStub([{ path: "/es", Component: Header }]);
+    render(<Stub initialEntries={["/es"]} />);
 
     expect(
       screen.getByRole("link", { name: "Aquiles Cancinos" }),
-    ).toHaveAttribute("href", "/");
+    ).toHaveAttribute("href", "/es");
+  });
+
+  it("includes a language switcher linking to the other locale", () => {
+    const Stub = createRoutesStub([{ path: "/es", Component: Header }]);
+    render(<Stub initialEntries={["/es"]} />);
+
+    expect(screen.getByRole("link", { name: "English" })).toHaveAttribute(
+      "href",
+      "/en",
+    );
   });
 
   it("has no detectable accessibility violations", async () => {
-    const Stub = createRoutesStub([{ path: "/", Component: Header }]);
-    const { container } = render(<Stub initialEntries={["/"]} />);
+    const Stub = createRoutesStub([{ path: "/es", Component: Header }]);
+    const { container } = render(<Stub initialEntries={["/es"]} />);
 
     expect(await axe(container)).toHaveNoViolations();
   });
