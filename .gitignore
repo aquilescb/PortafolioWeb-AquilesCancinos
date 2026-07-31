@@ -1,0 +1,30 @@
+.DS_Store
+Thumbs.db
+
+# Dependencies
+/node_modules/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# React Router
+/.react-router/
+/build/
+
+# Tooling caches
+/coverage/
+/.vercel/
+*.tsbuildinfo
+.eslintcache
+
+# Editors and local agent settings
+.idea/
+.vscode/*
+!.vscode/extensions.json
+.claude/settings.local.json
+
+# Logs
+*.log
+npm-debug.log*
