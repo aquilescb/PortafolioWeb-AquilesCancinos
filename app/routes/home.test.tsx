@@ -8,7 +8,7 @@ import Home from "./home";
 describe("Home route", () => {
   it("renders a single top-level heading", () => {
     render(
-      <MemoryRouter>
+      <MemoryRouter initialEntries={["/es"]}>
         <Home />
       </MemoryRouter>,
     );
@@ -18,9 +18,31 @@ describe("Home route", () => {
     expect(headings[0]).toHaveTextContent("Aquiles Cancinos");
   });
 
+  it("renders the Spanish copy at /es", () => {
+    render(
+      <MemoryRouter initialEntries={["/es"]}>
+        <Home />
+      </MemoryRouter>,
+    );
+
+    expect(
+      screen.getByText(/vista previa del sistema de diseño/i),
+    ).toBeInTheDocument();
+  });
+
+  it("renders the English copy at /en", () => {
+    render(
+      <MemoryRouter initialEntries={["/en"]}>
+        <Home />
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByText(/design system preview/i)).toBeInTheDocument();
+  });
+
   it("has no detectable accessibility violations", async () => {
     const { container } = render(
-      <MemoryRouter>
+      <MemoryRouter initialEntries={["/es"]}>
         <Home />
       </MemoryRouter>,
     );
