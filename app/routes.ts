@@ -12,6 +12,7 @@ import { routeMap, type RouteKey } from "../content/i18n/route-map";
 // `localizedRoutes` mounts the same file at both locales' paths.
 const routeFiles: Record<RouteKey, string> = {
   home: "routes/home.tsx",
+  projects: "routes/projects.tsx",
 };
 
 const routeKeys = Object.keys(routeMap) as RouteKey[];

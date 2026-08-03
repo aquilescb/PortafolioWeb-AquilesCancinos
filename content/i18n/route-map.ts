@@ -6,6 +6,7 @@ import { isLocale, LOCALES, type Locale } from "./locale";
 // phases introduce their route files — nothing else needs to change.
 export const routeMap = {
   home: { es: "", en: "" },
+  projects: { es: "proyectos", en: "projects" },
 } as const satisfies Record<string, Record<Locale, string>>;
 
 export type RouteKey = keyof typeof routeMap;
@@ -15,6 +16,12 @@ const routeKeys = Object.keys(routeMap) as RouteKey[];
 export function localizedPath(key: RouteKey, locale: Locale): string {
   const segment = routeMap[key][locale];
   return segment ? `/${locale}/${segment}` : `/${locale}`;
+}
+
+// Project detail lives under the `projects` segment but isn't in `routeMap`
+// itself: it takes a dynamic `slug`, not a fixed per-locale path.
+export function projectDetailPath(slug: string, locale: Locale): string {
+  return `${localizedPath("projects", locale)}/${slug}`;
 }
 
 // Every static path the site needs prerendered: the root redirect stub plus

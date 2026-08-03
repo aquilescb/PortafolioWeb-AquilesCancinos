@@ -11,9 +11,15 @@ export const es = {
     notFound: {
       title: "Página no encontrada — Aquiles Cancinos",
     },
+    projects: {
+      title: "Proyectos — Aquiles Cancinos",
+      description:
+        "Proyectos y casos de estudio de Aquiles Cancinos: sistemas completos de interfaz, API, datos, seguridad y despliegue.",
+    },
   },
   nav: {
     skipToContent: "Saltar al contenido",
+    projects: "Proyectos",
   },
   theme: {
     switchToDark: "Cambiar a tema oscuro",
@@ -61,5 +67,27 @@ export const es = {
       link: "enlace en línea",
       after: "de color de acento.",
     },
+  },
+  projects: {
+    heading: "Proyectos",
+    intro:
+      "Sistemas completos, con problema, decisiones técnicas y resultado verificable. Filtrá por tecnología, año o contexto.",
+    filters: {
+      technology: "Tecnología",
+      year: "Año",
+      context: "Contexto",
+      category: "Categoría",
+      clear: "Limpiar filtros",
+      allYears: "Todos los años",
+    },
+    contexts: {
+      professional: "Profesional",
+      personal: "Personal",
+      academic: "Académico",
+      experimental: "Experimental",
+    },
+    empty: "Todavía no hay proyectos cargados con estos filtros.",
+    viewProject: "Ver proyecto",
+    privateRepository: "Repositorio privado",
   },
 };

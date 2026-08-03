@@ -12,9 +12,15 @@ export const en: typeof es = {
     notFound: {
       title: "Page not found — Aquiles Cancinos",
     },
+    projects: {
+      title: "Projects — Aquiles Cancinos",
+      description:
+        "Aquiles Cancinos' projects and case studies: complete systems spanning interface, API, data, security and deployment.",
+    },
   },
   nav: {
     skipToContent: "Skip to content",
+    projects: "Projects",
   },
   theme: {
     switchToDark: "Switch to dark theme",
@@ -62,5 +68,27 @@ export const en: typeof es = {
       link: "inline link",
       after: "in the accent colour.",
     },
+  },
+  projects: {
+    heading: "Projects",
+    intro:
+      "Complete systems, with the problem, technical decisions and a verifiable result. Filter by technology, year or context.",
+    filters: {
+      technology: "Technology",
+      year: "Year",
+      context: "Context",
+      category: "Category",
+      clear: "Clear filters",
+      allYears: "All years",
+    },
+    contexts: {
+      professional: "Professional",
+      personal: "Personal",
+      academic: "Academic",
+      experimental: "Experimental",
+    },
+    empty: "No projects match these filters yet.",
+    viewProject: "View project",
+    privateRepository: "Private repository",
   },
 };
