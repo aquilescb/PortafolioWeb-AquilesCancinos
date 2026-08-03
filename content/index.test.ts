@@ -63,11 +63,50 @@ vi.mock("./data/projects", () => ({
       cover: "/gamma.avif",
       screenshots: [],
     },
+    {
+      slug: "content-pipeline-sample",
+      title: { es: "Muestra", en: "Sample" },
+      summary: { es: "Resumen", en: "Summary" },
+      problem: { es: "Problema", en: "Problem" },
+      year: 2025,
+      status: "completed",
+      tier: "main",
+      context: "experimental",
+      role: { es: "Dev", en: "Dev" },
+      technologies: [{ type: "technology", slug: "typescript" }],
+      categories: ["tooling"],
+      visibility: "public",
+      cover: "/sample.avif",
+      screenshots: [],
+      caseStudy: { es: true, en: true },
+    },
+    {
+      slug: "content-pipeline-sample-partial",
+      title: { es: "Muestra parcial", en: "Partial sample" },
+      summary: { es: "Resumen", en: "Summary" },
+      problem: { es: "Problema", en: "Problem" },
+      year: 2025,
+      status: "completed",
+      tier: "main",
+      context: "experimental",
+      role: { es: "Dev", en: "Dev" },
+      technologies: [{ type: "technology", slug: "typescript" }],
+      categories: ["tooling"],
+      visibility: "public",
+      cover: "/sample.avif",
+      screenshots: [],
+      caseStudy: { es: true, en: false },
+    },
   ],
 }));
 
-const { getFeaturedProjects, getAllProjects, getProjectBySlug } =
-  await import("./index");
+const {
+  getFeaturedProjects,
+  getAllProjects,
+  getProjectBySlug,
+  getCaseStudy,
+  resolveCaseStudyLocale,
+} = await import("./index");
 
 describe("getFeaturedProjects", () => {
   it("returns only featured projects, ordered by featuredOrder", () => {
@@ -99,7 +138,7 @@ describe("getAllProjects", () => {
   });
 
   it("returns every project when no filter is given", () => {
-    expect(getAllProjects("en")).toHaveLength(3);
+    expect(getAllProjects("en")).toHaveLength(5);
   });
 });
 
@@ -113,5 +152,65 @@ describe("getProjectBySlug", () => {
     expect(gamma?.visibility).toBe("private");
     expect(gamma?.repositoryUrl).toBeUndefined();
     expect(gamma?.hasCaseStudy).toBe(false);
+  });
+
+  it("flags hasCaseStudy for a project with a declared case study", () => {
+    expect(
+      getProjectBySlug("content-pipeline-sample", "en")?.hasCaseStudy,
+    ).toBe(true);
+  });
+});
+
+describe("resolveCaseStudyLocale", () => {
+  it("prefers the requested locale when declared and present", () => {
+    expect(
+      resolveCaseStudyLocale({ es: true, en: true }, "en", () => true),
+    ).toEqual({
+      locale: "en",
+      isFallback: false,
+    });
+  });
+
+  it("falls back to the other locale when only it is declared", () => {
+    expect(
+      resolveCaseStudyLocale({ es: true, en: false }, "en", () => true),
+    ).toEqual({
+      locale: "es",
+      isFallback: true,
+    });
+  });
+
+  it("returns null when the declared locale's file is missing", () => {
+    expect(
+      resolveCaseStudyLocale({ es: true, en: false }, "en", () => false),
+    ).toBeNull();
+  });
+
+  it("returns null when no case study is declared", () => {
+    expect(resolveCaseStudyLocale(undefined, "en", () => true)).toBeNull();
+  });
+});
+
+describe("getCaseStudy", () => {
+  it("loads the compiled MDX component for a fully bilingual case study", async () => {
+    const result = await getCaseStudy("content-pipeline-sample", "es");
+    expect(result?.locale).toBe("es");
+    expect(result?.isFallback).toBe(false);
+    expect(typeof result?.Component).toBe("function");
+  });
+
+  it("falls back to the declared locale and loads its real MDX file", async () => {
+    const result = await getCaseStudy("content-pipeline-sample-partial", "en");
+    expect(result?.locale).toBe("es");
+    expect(result?.isFallback).toBe(true);
+    expect(typeof result?.Component).toBe("function");
+  });
+
+  it("returns null for a project without a case study", async () => {
+    expect(await getCaseStudy("beta", "en")).toBeNull();
+  });
+
+  it("returns null for an unknown project", async () => {
+    expect(await getCaseStudy("does-not-exist", "en")).toBeNull();
   });
 });

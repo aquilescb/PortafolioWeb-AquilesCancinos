@@ -2,6 +2,10 @@
 // reach into `content/data/*` directly (enforced by an ESLint rule); they
 // call these functions instead. Migrating to a CMS/API later means
 // reimplementing these functions as async — callers stay the same.
+import { existsSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+
 import { projects } from "./data/projects";
 import { technologies } from "./data/technologies";
 import { getStaticPaths } from "./i18n/route-map";
@@ -131,4 +135,77 @@ export function getProjectBySlug(
 // map so `react-router.config.ts` has a single, stable import to depend on.
 export function getAllPrerenderPaths(): string[] {
   return getStaticPaths();
+}
+
+const caseStudiesDir = join(
+  dirname(fileURLToPath(import.meta.url)),
+  "case-studies",
+);
+
+// Node-safe existence check (no bundler required) — used by both
+// `getCaseStudy` below and the `validate:content` script, which runs outside
+// Vite and can't rely on dynamic MDX imports resolving.
+export function caseStudyFileExists(slug: string, locale: Locale): boolean {
+  return existsSync(join(caseStudiesDir, slug, `${locale}.mdx`));
+}
+
+export interface CaseStudyResult {
+  Component: Awaited<ReturnType<typeof importCaseStudy>>;
+  locale: Locale;
+  isFallback: boolean;
+}
+
+interface ResolvedCaseStudyLocale {
+  locale: Locale;
+  isFallback: boolean;
+}
+
+// Pure decision logic, independent of the filesystem and the MDX loader, so
+// the fallback behaviour is unit-testable without real `.mdx` files: prefer
+// the requested locale, fall back to the other one when only it exists (per
+// the plan's §6.3 translation fallback), or give up when neither resolves.
+export function resolveCaseStudyLocale(
+  declared: { es: boolean; en: boolean } | undefined,
+  requestedLocale: Locale,
+  fileExists: (locale: Locale) => boolean,
+): ResolvedCaseStudyLocale | null {
+  if (!declared) return null;
+
+  const otherLocale: Locale = requestedLocale === "es" ? "en" : "es";
+  const preferredLocale = declared[requestedLocale]
+    ? requestedLocale
+    : otherLocale;
+  if (!declared[preferredLocale] || !fileExists(preferredLocale)) return null;
+
+  return {
+    locale: preferredLocale,
+    isFallback: preferredLocale !== requestedLocale,
+  };
+}
+
+async function importCaseStudy(slug: string, locale: Locale) {
+  const module = await import(`./case-studies/${slug}/${locale}.mdx`);
+  return module.default;
+}
+
+// Loads a project's case study MDX for the requested locale, falling back to
+// the other locale when only one is declared. Returns null when the project
+// has no case study at all.
+export async function getCaseStudy(
+  slug: string,
+  locale: Locale,
+): Promise<CaseStudyResult | null> {
+  const project = projects.find((candidate) => candidate.slug === slug);
+  const resolved = resolveCaseStudyLocale(
+    project?.caseStudy,
+    locale,
+    (candidate) => caseStudyFileExists(slug, candidate),
+  );
+  if (!resolved) return null;
+
+  return {
+    Component: await importCaseStudy(slug, resolved.locale),
+    locale: resolved.locale,
+    isFallback: resolved.isFallback,
+  };
 }
