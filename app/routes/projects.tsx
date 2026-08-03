@@ -4,7 +4,7 @@ import { dictionaries } from "@content/i18n/dictionaries";
 import { localeFromPathname } from "@content/i18n/locale";
 import { ProjectCard } from "~/components/content/project-card";
 import { ProjectFilters } from "~/components/content/project-filters";
-import { buildAlternates } from "~/seo/alternates";
+import { buildRouteAlternates } from "~/seo/alternates";
 import { buildMeta } from "~/seo/meta";
 import { useLocale } from "~/i18n/use-locale";
 import { useTranslation } from "~/i18n/use-translation";
@@ -21,7 +21,7 @@ export function meta({ location }: Route.MetaArgs) {
       title: t.meta.projects.title,
       description: t.meta.projects.description,
     }),
-    ...buildAlternates("projects", locale),
+    ...buildRouteAlternates("projects", locale),
   ];
 }
 

@@ -105,8 +105,16 @@ const {
   getAllProjects,
   getProjectBySlug,
   getCaseStudy,
+  getAllPrerenderPaths,
+  hasProjects,
   resolveCaseStudyLocale,
 } = await import("./index");
+
+describe("hasProjects", () => {
+  it("is true once the content layer has at least one project", () => {
+    expect(hasProjects()).toBe(true);
+  });
+});
 
 describe("getFeaturedProjects", () => {
   it("returns only featured projects, ordered by featuredOrder", () => {
@@ -158,6 +166,27 @@ describe("getProjectBySlug", () => {
     expect(
       getProjectBySlug("content-pipeline-sample", "en")?.hasCaseStudy,
     ).toBe(true);
+  });
+});
+
+describe("getAllPrerenderPaths", () => {
+  it("includes the static routes plus one detail path per project per locale", () => {
+    const paths = getAllPrerenderPaths();
+
+    expect(paths).toEqual(
+      expect.arrayContaining([
+        "/es",
+        "/en",
+        "/es/proyectos",
+        "/en/projects",
+        "/es/proyectos/beta",
+        "/en/projects/beta",
+        "/es/proyectos/gamma",
+        "/en/projects/gamma",
+      ]),
+    );
+    // 5 static routes (root + home/projects x 2 locales) + 5 projects x 2 locales = 15
+    expect(paths).toHaveLength(15);
   });
 });
 

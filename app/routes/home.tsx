@@ -2,7 +2,7 @@ import type { Route } from "./+types/home";
 import { dictionaries } from "@content/i18n/dictionaries";
 import { localeFromPathname } from "@content/i18n/locale";
 import { localizedPath } from "@content/i18n/route-map";
-import { buildAlternates } from "~/seo/alternates";
+import { buildRouteAlternates } from "~/seo/alternates";
 import { buildMeta } from "~/seo/meta";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
@@ -22,7 +22,7 @@ export function meta({ location }: Route.MetaArgs) {
       title: t.meta.home.title,
       description: t.meta.home.description,
     }),
-    ...buildAlternates("home", locale),
+    ...buildRouteAlternates("home", locale),
   ];
 }
 

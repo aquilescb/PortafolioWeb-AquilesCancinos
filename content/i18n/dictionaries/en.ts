@@ -18,6 +18,9 @@ export const en: typeof es = {
         "Aquiles Cancinos' projects and case studies: complete systems spanning interface, API, data, security and deployment.",
     },
   },
+  common: {
+    opensInNewTab: "(opens in a new tab)",
+  },
   nav: {
     skipToContent: "Skip to content",
     projects: "Projects",
@@ -90,5 +93,26 @@ export const en: typeof es = {
     empty: "No projects match these filters yet.",
     viewProject: "View project",
     privateRepository: "Private repository",
+    detail: {
+      backToProjects: "Back to projects",
+      problem: "The problem",
+      role: "My role",
+      stack: "Stack",
+      year: "Year",
+      duration: "Duration",
+      teamSize: "Team",
+      organization: "Organization",
+      statusLabel: "Status",
+      status: {
+        active: "Active",
+        completed: "Completed",
+        archived: "Archived",
+      },
+      repository: "Repository",
+      demo: "Live demo",
+      screenshots: "Screenshots",
+      notTranslated:
+        "This case study isn't translated into this language yet. Showing the other available language.",
+    },
   },
 };

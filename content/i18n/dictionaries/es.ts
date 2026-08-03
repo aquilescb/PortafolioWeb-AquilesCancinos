@@ -17,6 +17,9 @@ export const es = {
         "Proyectos y casos de estudio de Aquiles Cancinos: sistemas completos de interfaz, API, datos, seguridad y despliegue.",
     },
   },
+  common: {
+    opensInNewTab: "(se abre en una pestaña nueva)",
+  },
   nav: {
     skipToContent: "Saltar al contenido",
     projects: "Proyectos",
@@ -89,5 +92,26 @@ export const es = {
     empty: "Todavía no hay proyectos cargados con estos filtros.",
     viewProject: "Ver proyecto",
     privateRepository: "Repositorio privado",
+    detail: {
+      backToProjects: "Volver a proyectos",
+      problem: "El problema",
+      role: "Mi rol",
+      stack: "Stack",
+      year: "Año",
+      duration: "Duración",
+      teamSize: "Equipo",
+      organization: "Organización",
+      statusLabel: "Estado",
+      status: {
+        active: "Activo",
+        completed: "Completado",
+        archived: "Archivado",
+      },
+      repository: "Repositorio",
+      demo: "Demo en vivo",
+      screenshots: "Capturas",
+      notTranslated:
+        "Este caso de estudio todavía no está traducido a este idioma. Se muestra en el otro idioma disponible.",
+    },
   },
 };

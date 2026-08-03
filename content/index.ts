@@ -8,8 +8,8 @@ import { fileURLToPath } from "node:url";
 
 import { projects } from "./data/projects";
 import { technologies } from "./data/technologies";
-import { getStaticPaths } from "./i18n/route-map";
-import type { Locale } from "./i18n/locale";
+import { getStaticPaths, projectDetailPath } from "./i18n/route-map";
+import { LOCALES, type Locale } from "./i18n/locale";
 import type { Project, ProjectContext } from "./schemas/project";
 import type { Technology } from "./schemas/technology";
 
@@ -88,6 +88,15 @@ function matchesFilter(project: Project, filter?: ProjectFilter): boolean {
   return true;
 }
 
+// `app/routes.ts` reads this at route-config time to decide whether to
+// register the project detail route at all. With `ssr:false`, React Router
+// errors at build time if a route exports a `loader` but matches zero
+// prerender paths — which is exactly the state of project detail while no
+// real project has been loaded yet (see the plan's §18 and Phase 4 notes).
+export function hasProjects(): boolean {
+  return projects.length > 0;
+}
+
 // The home page shows exactly three featured projects, ordered by
 // `featuredOrder` (see CLAUDE.md content rules).
 export function getFeaturedProjects(locale: Locale): ProjectSummary[] {
@@ -129,12 +138,15 @@ export function getProjectBySlug(
   };
 }
 
-// Every static path the prerenderer needs, both locales. Content-driven
-// paths (project detail pages) are added here once Phase 4 introduces the
-// route that renders them; for now this simply re-exports the locale route
-// map so `react-router.config.ts` has a single, stable import to depend on.
+// Every static path the prerenderer needs, both locales: the fixed routes
+// in `routeMap` plus one project detail path per project per locale. The
+// same list feeds `scripts/generate-sitemap.ts`, so prerender output and
+// the sitemap can never drift apart.
 export function getAllPrerenderPaths(): string[] {
-  return getStaticPaths();
+  const projectPaths = LOCALES.flatMap((locale) =>
+    projects.map((project) => projectDetailPath(project.slug, locale)),
+  );
+  return [...getStaticPaths(), ...projectPaths];
 }
 
 const caseStudiesDir = join(
