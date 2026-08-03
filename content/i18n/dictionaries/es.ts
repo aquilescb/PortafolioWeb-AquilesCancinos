@@ -16,6 +16,11 @@ export const es = {
       description:
         "Proyectos y casos de estudio de Aquiles Cancinos: sistemas completos de interfaz, API, datos, seguridad y despliegue.",
     },
+    about: {
+      title: "Sobre mí — Aquiles Cancinos",
+      description:
+        "Estudiante avanzado de Ingeniería Informática, desarrollador full-stack. Bio, enfoque de trabajo y contacto.",
+    },
   },
   common: {
     opensInNewTab: "(se abre en una pestaña nueva)",
@@ -23,6 +28,7 @@ export const es = {
   nav: {
     skipToContent: "Saltar al contenido",
     projects: "Proyectos",
+    about: "Sobre mí",
   },
   theme: {
     switchToDark: "Cambiar a tema oscuro",
@@ -113,5 +119,19 @@ export const es = {
       notTranslated:
         "Este caso de estudio todavía no está traducido a este idioma. Se muestra en el otro idioma disponible.",
     },
+  },
+  about: {
+    heading: "Sobre mí",
+    role: "Desarrollador Full-Stack",
+    valueProp:
+      "Diseño y construyo sistemas completos: interfaz, API, base de datos, seguridad y despliegue.",
+    bio: "Soy estudiante avanzado de Ingeniería Informática (4.º año) y me dedico a diseñar y construir sistemas de software completos, desde la interfaz hasta el despliegue. Me define una curiosidad constante: aprendo por mi cuenta, entiendo el problema antes de escribir código, y disfruto tanto trabajar de forma individual como en equipos donde la comunicación clara marca la diferencia. Además de la formación técnica, trabajo activamente mi autodisciplina, la gestión del tiempo y la toma de decisiones bajo presión — herramientas tan importantes como cualquier lenguaje o framework. Hoy estoy enfocado en sumar experiencia profesional real y seguir creciendo como desarrollador full-stack.",
+  },
+  contact: {
+    heading: "Contacto",
+    intro: "¿Tenés un proyecto o una oportunidad en mente? Escribime.",
+    email: "Email",
+    copyEmail: "Copiar email",
+    emailCopied: "¡Copiado!",
   },
 };

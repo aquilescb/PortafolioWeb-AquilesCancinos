@@ -7,6 +7,7 @@ import { isLocale, LOCALES, type Locale } from "./locale";
 export const routeMap = {
   home: { es: "", en: "" },
   projects: { es: "proyectos", en: "projects" },
+  about: { es: "sobre-mi", en: "about" },
 } as const satisfies Record<string, Record<Locale, string>>;
 
 export type RouteKey = keyof typeof routeMap;

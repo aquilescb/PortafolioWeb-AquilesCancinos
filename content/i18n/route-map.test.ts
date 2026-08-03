@@ -17,6 +17,11 @@ describe("localizedPath", () => {
     expect(localizedPath("projects", "es")).toBe("/es/proyectos");
     expect(localizedPath("projects", "en")).toBe("/en/projects");
   });
+
+  it("builds the localized about path for each locale", () => {
+    expect(localizedPath("about", "es")).toBe("/es/sobre-mi");
+    expect(localizedPath("about", "en")).toBe("/en/about");
+  });
 });
 
 describe("projectDetailPath", () => {
@@ -36,8 +41,10 @@ describe("getStaticPaths", () => {
       "/",
       "/es",
       "/es/proyectos",
+      "/es/sobre-mi",
       "/en",
       "/en/projects",
+      "/en/about",
     ]);
   });
 });

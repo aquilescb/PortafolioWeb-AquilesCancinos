@@ -19,9 +19,12 @@ export function Header() {
           Aquiles Cancinos
         </Link>
         <div className="flex items-center gap-4">
-          <nav>
+          <nav className="flex items-center gap-4">
             <Link to={localizedPath("projects", locale)} className="text-sm">
               {t.nav.projects}
+            </Link>
+            <Link to={localizedPath("about", locale)} className="text-sm">
+              {t.nav.about}
             </Link>
           </nav>
           <LanguageSwitcher />

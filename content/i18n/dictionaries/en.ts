@@ -17,6 +17,11 @@ export const en: typeof es = {
       description:
         "Aquiles Cancinos' projects and case studies: complete systems spanning interface, API, data, security and deployment.",
     },
+    about: {
+      title: "About — Aquiles Cancinos",
+      description:
+        "Advanced Computer Engineering student, full-stack developer. Bio, working approach and contact.",
+    },
   },
   common: {
     opensInNewTab: "(opens in a new tab)",
@@ -24,6 +29,7 @@ export const en: typeof es = {
   nav: {
     skipToContent: "Skip to content",
     projects: "Projects",
+    about: "About",
   },
   theme: {
     switchToDark: "Switch to dark theme",
@@ -114,5 +120,19 @@ export const en: typeof es = {
       notTranslated:
         "This case study isn't translated into this language yet. Showing the other available language.",
     },
+  },
+  about: {
+    heading: "About",
+    role: "Full-Stack Developer",
+    valueProp:
+      "I design and build complete systems: interface, API, database, security and deployment.",
+    bio: "I'm an advanced Computer Engineering student (4th year) focused on designing and building complete software systems, from interface to deployment. I'm defined by constant curiosity: I learn on my own, make sure I understand a problem before writing code, and enjoy working both independently and in teams where clear communication makes the difference. Beyond technical training, I actively work on self-discipline, time management and decision-making under pressure — tools as important as any language or framework. Right now I'm focused on gaining real professional experience and continuing to grow as a full-stack developer.",
+  },
+  contact: {
+    heading: "Contact",
+    intro: "Have a project or an opportunity in mind? Reach out.",
+    email: "Email",
+    copyEmail: "Copy email",
+    emailCopied: "Copied!",
   },
 };

@@ -25,6 +25,16 @@ describe("Header", () => {
     );
   });
 
+  it("links to the localized about page", () => {
+    const Stub = createRoutesStub([{ path: "/es", Component: Header }]);
+    render(<Stub initialEntries={["/es"]} />);
+
+    expect(screen.getByRole("link", { name: "Sobre mí" })).toHaveAttribute(
+      "href",
+      "/es/sobre-mi",
+    );
+  });
+
   it("includes a language switcher linking to the other locale", () => {
     const Stub = createRoutesStub([{ path: "/es", Component: Header }]);
     render(<Stub initialEntries={["/es"]} />);

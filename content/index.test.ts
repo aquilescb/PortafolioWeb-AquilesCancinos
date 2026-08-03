@@ -1,5 +1,18 @@
 import { describe, expect, it, vi } from "vitest";
 
+vi.mock("./data/contact", () => ({
+  contact: {
+    email: "person@example.com",
+    socials: [
+      {
+        url: "https://github.com/example",
+        label: { es: "GitHub", en: "GitHub" },
+        kind: "profile",
+      },
+    ],
+  },
+}));
+
 vi.mock("./data/technologies", () => ({
   technologies: [
     {
@@ -106,9 +119,29 @@ const {
   getProjectBySlug,
   getCaseStudy,
   getAllPrerenderPaths,
+  getContact,
   hasProjects,
   resolveCaseStudyLocale,
 } = await import("./index");
+
+describe("getContact", () => {
+  it("splits the email into user and domain instead of joining it", () => {
+    const info = getContact("es");
+
+    expect(info.emailUser).toBe("person");
+    expect(info.emailDomain).toBe("example.com");
+  });
+
+  it("resolves social link labels for the requested locale", () => {
+    const info = getContact("es");
+
+    expect(info.socials).toEqual([
+      { url: "https://github.com/example", label: "GitHub", kind: "profile" },
+    ]);
+    expect(info.location).toBeUndefined();
+    expect(info.availability).toBeUndefined();
+  });
+});
 
 describe("hasProjects", () => {
   it("is true once the content layer has at least one project", () => {
@@ -179,14 +212,16 @@ describe("getAllPrerenderPaths", () => {
         "/en",
         "/es/proyectos",
         "/en/projects",
+        "/es/sobre-mi",
+        "/en/about",
         "/es/proyectos/beta",
         "/en/projects/beta",
         "/es/proyectos/gamma",
         "/en/projects/gamma",
       ]),
     );
-    // 5 static routes (root + home/projects x 2 locales) + 5 projects x 2 locales = 15
-    expect(paths).toHaveLength(15);
+    // 7 static routes (root + home/projects/about x 2 locales) + 5 projects x 2 locales = 17
+    expect(paths).toHaveLength(17);
   });
 });
 
