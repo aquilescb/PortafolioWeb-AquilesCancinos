@@ -8,14 +8,24 @@ import { Tag } from "~/components/ui/tag";
 interface ProjectCardProps {
   project: ProjectSummary;
   locale: Locale;
+  // Cards render directly under the page's `h1` on the projects list (h2 is
+  // correct there), but the home page nests them under its own "Featured
+  // projects" `h2` section heading — this lets the caller keep heading order
+  // correct instead of the component guessing its context.
+  headingLevel?: 2 | 3;
 }
 
 // A fixed aspect-ratio wrapper keeps layout stable before the image loads,
 // even without known intrinsic dimensions (the cover has none yet — Phase 4
 // ships without real screenshots). `ResponsiveImage` replaces this `<img>`
 // once real, dimensioned assets exist.
-export function ProjectCard({ project, locale }: ProjectCardProps) {
+export function ProjectCard({
+  project,
+  locale,
+  headingLevel = 2,
+}: ProjectCardProps) {
   const href = projectDetailPath(project.slug, locale);
+  const Heading = headingLevel === 3 ? "h3" : "h2";
 
   return (
     <article>
@@ -32,9 +42,9 @@ export function ProjectCard({ project, locale }: ProjectCardProps) {
           <p className="text-ink/60 dark:text-ink-dark/60 text-sm">
             {project.year}
           </p>
-          <h2 className="font-display mt-1 text-xl font-medium">
+          <Heading className="font-display mt-1 text-xl font-medium">
             <Link to={href}>{project.title}</Link>
-          </h2>
+          </Heading>
           <p className="text-ink/70 dark:text-ink-dark/70 mt-2 text-sm">
             {project.summary}
           </p>

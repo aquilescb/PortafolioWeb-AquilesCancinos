@@ -53,28 +53,19 @@ export const es = {
     fallbackLink: "Si no fuiste redirigido automáticamente, hacé clic aquí.",
   },
   home: {
-    title: "Aquiles Cancinos",
-    subtitle:
-      "Vista previa del sistema de diseño — estructura de página, tipografía, tokens de color y primitivas de UI para la dirección editorial-técnica.",
-    sections: {
-      buttons: "Botones",
-      tags: "Etiquetas",
-      card: "Tarjeta",
-      prose: "Prosa",
+    heading: "Aquiles Cancinos",
+    cta: {
+      projects: "Ver proyectos",
+      about: "Sobre mí",
     },
-    buttons: {
-      primary: "Acción primaria",
-      secondary: "Acción secundaria",
+    featured: {
+      heading: "Proyectos destacados",
+      empty: "Todavía no hay proyectos destacados cargados.",
     },
-    card: {
-      title: "Tarjeta de ejemplo",
-      body: "Borde fino, relleno generoso, sin sombra.",
-    },
-    prose: {
-      before:
-        "El texto largo, como un caso de estudio, se muestra dentro de esta medida de lectura con un",
-      link: "enlace en línea",
-      after: "de color de acento.",
+    evidence: {
+      heading: "Stack",
+      intro: "Tecnologías con las que trabajé en los proyectos de arriba.",
+      empty: "Todavía no hay tecnologías para mostrar.",
     },
   },
   projects: {

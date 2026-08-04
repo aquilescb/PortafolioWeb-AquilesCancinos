@@ -46,6 +46,30 @@ describe("ProjectCard", () => {
     ).toHaveAttribute("href", "/en/projects/inventory-system");
   });
 
+  it("renders the title as an h2 by default", () => {
+    render(
+      <MemoryRouter>
+        <ProjectCard project={project} locale="es" />
+      </MemoryRouter>,
+    );
+
+    expect(
+      screen.getByRole("heading", { level: 2, name: "Inventory System" }),
+    ).toBeInTheDocument();
+  });
+
+  it("renders the title as an h3 when nested under a section heading", () => {
+    render(
+      <MemoryRouter>
+        <ProjectCard project={project} locale="es" headingLevel={3} />
+      </MemoryRouter>,
+    );
+
+    expect(
+      screen.getByRole("heading", { level: 3, name: "Inventory System" }),
+    ).toBeInTheDocument();
+  });
+
   it("lists the project's technologies", () => {
     render(
       <MemoryRouter>

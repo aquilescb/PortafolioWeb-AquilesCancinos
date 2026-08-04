@@ -54,28 +54,19 @@ export const en: typeof es = {
     fallbackLink: "If you were not redirected automatically, click here.",
   },
   home: {
-    title: "Aquiles Cancinos",
-    subtitle:
-      "Design system preview — page shell, typography, colour tokens and UI primitives for the editorial-technical direction.",
-    sections: {
-      buttons: "Buttons",
-      tags: "Tags",
-      card: "Card",
-      prose: "Prose",
+    heading: "Aquiles Cancinos",
+    cta: {
+      projects: "View projects",
+      about: "About me",
     },
-    buttons: {
-      primary: "Primary action",
-      secondary: "Secondary action",
+    featured: {
+      heading: "Featured projects",
+      empty: "No featured projects loaded yet.",
     },
-    card: {
-      title: "Example card",
-      body: "Hairline border, generous padding, no drop shadow.",
-    },
-    prose: {
-      before:
-        "Long-form text, such as a project case study, renders inside this reading measure with an",
-      link: "inline link",
-      after: "in the accent colour.",
+    evidence: {
+      heading: "Stack",
+      intro: "Technologies used in the projects above.",
+      empty: "No technologies to show yet.",
     },
   },
   projects: {
