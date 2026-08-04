@@ -9,15 +9,17 @@ import { ExternalLink } from "~/components/ui/external-link";
 import { Link } from "~/components/ui/link";
 import { Tag } from "~/components/ui/tag";
 import { buildRouteAlternates } from "~/seo/alternates";
+import { globalMetaTags } from "~/seo/json-ld";
 import { buildMeta } from "~/seo/meta";
 import { useLocale } from "~/i18n/use-locale";
 import { useTranslation } from "~/i18n/use-translation";
 
-export function meta({ location }: Route.MetaArgs) {
+export function meta({ location, matches }: Route.MetaArgs) {
   const locale = localeFromPathname(location.pathname);
   const t = dictionaries[locale];
 
   return [
+    ...globalMetaTags(matches),
     ...buildMeta({
       locale,
       title: t.meta.home.title,

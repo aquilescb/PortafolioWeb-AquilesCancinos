@@ -205,6 +205,25 @@ describe("project-detail meta", () => {
     });
   });
 
+  it("renders CreativeWork and BreadcrumbList JSON-LD for the project", () => {
+    const tags = meta(
+      metaArgs("/es/proyectos/inventory-system", { project, caseStudy: null }),
+    );
+
+    expect(tags).toContainEqual({
+      "script:ld+json": expect.objectContaining({
+        "@type": "CreativeWork",
+        name: "Inventory System",
+        url: "https://portafolio-web-aquiles-cancinos.vercel.app/es/proyectos/inventory-system",
+      }),
+    });
+    expect(tags).toContainEqual({
+      "script:ld+json": expect.objectContaining({
+        "@type": "BreadcrumbList",
+      }),
+    });
+  });
+
   it("does not mark a fully translated case study noindex", () => {
     const tags = meta(
       metaArgs("/es/proyectos/inventory-system", {

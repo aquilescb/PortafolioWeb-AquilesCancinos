@@ -29,11 +29,11 @@ const featuredProject: ProjectSummary = {
   ],
 };
 
-function metaArgs(pathname: string) {
+function metaArgs(pathname: string, matches: unknown[] = []) {
   return {
     location: { pathname },
     params: {},
-    matches: [],
+    matches,
     loaderData: undefined,
   } as unknown as Parameters<typeof meta>[0];
 }
@@ -167,5 +167,14 @@ describe("Home route", () => {
       hrefLang: "en",
       href: "/en",
     });
+  });
+
+  it("pulls the root route's global JSON-LD tags back in", () => {
+    const rootTags = [{ "script:ld+json": { "@type": "Person" } }];
+    const tags = meta(
+      metaArgs("/es", [{ id: "root", meta: rootTags }, { id: "home-es" }]),
+    );
+
+    expect(tags).toContainEqual(rootTags[0]);
   });
 });

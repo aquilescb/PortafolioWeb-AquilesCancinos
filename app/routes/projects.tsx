@@ -5,17 +5,19 @@ import { localeFromPathname } from "@content/i18n/locale";
 import { ProjectCard } from "~/components/content/project-card";
 import { ProjectFilters } from "~/components/content/project-filters";
 import { buildRouteAlternates } from "~/seo/alternates";
+import { globalMetaTags } from "~/seo/json-ld";
 import { buildMeta } from "~/seo/meta";
 import { useLocale } from "~/i18n/use-locale";
 import { useTranslation } from "~/i18n/use-translation";
 import { filterProjects, parseProjectFilter } from "~/lib/project-filters";
 import { useSearchParams } from "react-router";
 
-export function meta({ location }: Route.MetaArgs) {
+export function meta({ location, matches }: Route.MetaArgs) {
   const locale = localeFromPathname(location.pathname);
   const t = dictionaries[locale];
 
   return [
+    ...globalMetaTags(matches),
     ...buildMeta({
       locale,
       title: t.meta.projects.title,

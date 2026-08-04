@@ -6,14 +6,16 @@ import { ContactEmail } from "~/components/content/contact-email";
 import { ExternalLink } from "~/components/ui/external-link";
 import { Prose } from "~/components/ui/prose";
 import { buildRouteAlternates } from "~/seo/alternates";
+import { globalMetaTags } from "~/seo/json-ld";
 import { buildMeta } from "~/seo/meta";
 import { useTranslation } from "~/i18n/use-translation";
 
-export function meta({ location }: Route.MetaArgs) {
+export function meta({ location, matches }: Route.MetaArgs) {
   const locale = localeFromPathname(location.pathname);
   const t = dictionaries[locale];
 
   return [
+    ...globalMetaTags(matches),
     ...buildMeta({
       locale,
       title: t.meta.about.title,

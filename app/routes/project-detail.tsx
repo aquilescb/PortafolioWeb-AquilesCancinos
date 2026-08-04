@@ -9,6 +9,11 @@ import { Link } from "~/components/ui/link";
 import { Prose } from "~/components/ui/prose";
 import { Tag } from "~/components/ui/tag";
 import { buildAlternates } from "~/seo/alternates";
+import {
+  globalMetaTags,
+  projectBreadcrumbJsonLd,
+  projectCreativeWorkJsonLd,
+} from "~/seo/json-ld";
 import { buildMeta } from "~/seo/meta";
 import { useLocale } from "~/i18n/use-locale";
 import { useTranslation } from "~/i18n/use-translation";
@@ -28,7 +33,11 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   return { project, caseStudy };
 }
 
-export const meta: MetaFunction<typeof loader> = ({ loaderData, location }) => {
+export const meta: MetaFunction<typeof loader> = ({
+  loaderData,
+  location,
+  matches,
+}) => {
   const locale = localeFromPathname(location.pathname);
   const t = dictionaries[locale];
 
@@ -41,6 +50,7 @@ export const meta: MetaFunction<typeof loader> = ({ loaderData, location }) => {
 
   const { project, caseStudy } = loaderData;
   const tags = [
+    ...globalMetaTags(matches),
     ...buildMeta({
       locale,
       title: `${project.title} — Aquiles Cancinos`,
@@ -56,6 +66,11 @@ export const meta: MetaFunction<typeof loader> = ({ loaderData, location }) => {
   if (caseStudy?.isFallback) {
     tags.push({ name: "robots", content: "noindex" });
   }
+
+  tags.push(
+    { "script:ld+json": projectCreativeWorkJsonLd(project, locale) },
+    { "script:ld+json": projectBreadcrumbJsonLd(project, locale) },
+  );
 
   return tags;
 };
