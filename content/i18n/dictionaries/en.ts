@@ -119,6 +119,9 @@ export const en: typeof es = {
       "I design and build complete systems: interface, API, database, security and deployment.",
     bio: "I'm an advanced Computer Engineering student (4th year) focused on designing and building complete software systems, from interface to deployment. I'm defined by constant curiosity: I learn on my own, make sure I understand a problem before writing code, and enjoy working both independently and in teams where clear communication makes the difference. Beyond technical training, I actively work on self-discipline, time management and decision-making under pressure — tools as important as any language or framework. Right now I'm focused on gaining real professional experience and continuing to grow as a full-stack developer.",
   },
+  video: {
+    playLabel: "Play video",
+  },
   contact: {
     heading: "Contact",
     intro: "Have a project or an opportunity in mind? Reach out.",

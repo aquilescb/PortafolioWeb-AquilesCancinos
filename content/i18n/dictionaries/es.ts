@@ -118,6 +118,9 @@ export const es = {
       "Diseño y construyo sistemas completos: interfaz, API, base de datos, seguridad y despliegue.",
     bio: "Soy estudiante avanzado de Ingeniería Informática (4.º año) y me dedico a diseñar y construir sistemas de software completos, desde la interfaz hasta el despliegue. Me define una curiosidad constante: aprendo por mi cuenta, entiendo el problema antes de escribir código, y disfruto tanto trabajar de forma individual como en equipos donde la comunicación clara marca la diferencia. Además de la formación técnica, trabajo activamente mi autodisciplina, la gestión del tiempo y la toma de decisiones bajo presión — herramientas tan importantes como cualquier lenguaje o framework. Hoy estoy enfocado en sumar experiencia profesional real y seguir creciendo como desarrollador full-stack.",
   },
+  video: {
+    playLabel: "Reproducir video",
+  },
   contact: {
     heading: "Contacto",
     intro: "¿Tenés un proyecto o una oportunidad en mente? Escribime.",
