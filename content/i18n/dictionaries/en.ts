@@ -17,6 +17,11 @@ export const en: typeof es = {
       description:
         "Aquiles Cancinos' projects and case studies: complete systems spanning interface, API, data, security and deployment.",
     },
+    career: {
+      title: "Career — Aquiles Cancinos",
+      description:
+        "Aquiles Cancinos' verifiable experience, education and milestones on a timeline.",
+    },
     about: {
       title: "About — Aquiles Cancinos",
       description:
@@ -29,6 +34,7 @@ export const en: typeof es = {
   nav: {
     skipToContent: "Skip to content",
     projects: "Projects",
+    career: "Career",
     about: "About",
   },
   theme: {
@@ -110,6 +116,49 @@ export const en: typeof es = {
       screenshots: "Screenshots",
       notTranslated:
         "This case study isn't translated into this language yet. Showing the other available language.",
+    },
+  },
+  career: {
+    heading: "Career",
+    intro:
+      "Experience, education and verifiable milestones, on a single timeline. Filter by type.",
+    empty: "No entries match this filter yet.",
+    present: "Present",
+    filters: {
+      type: "Type",
+      clear: "Clear filter",
+    },
+    types: {
+      experience: "Experience",
+      education: "Education",
+      milestone: "Milestone",
+    },
+    experienceTypes: {
+      employment: "Employment",
+      freelance: "Freelance",
+      internship: "Internship",
+      volunteer: "Volunteer",
+    },
+    milestoneTypes: {
+      award: "Award",
+      contest: "Contest",
+      hackathon: "Hackathon",
+      talk: "Talk",
+      press: "Press",
+      publication: "Publication",
+      conference: "Conference",
+    },
+    viewMilestone: "View milestone",
+  },
+  milestone: {
+    detail: {
+      backToCareer: "Back to career",
+      evidence: "Evidence",
+      relatedProjects: "Related project",
+      date: "Date",
+      organization: "Organization",
+      notTranslated:
+        "This milestone isn't translated into this language yet. Showing the other available language.",
     },
   },
   about: {

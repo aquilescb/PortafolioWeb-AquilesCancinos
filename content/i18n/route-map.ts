@@ -7,6 +7,7 @@ import { isLocale, LOCALES, type Locale } from "./locale";
 export const routeMap = {
   home: { es: "", en: "" },
   projects: { es: "proyectos", en: "projects" },
+  career: { es: "trayectoria", en: "career" },
   about: { es: "sobre-mi", en: "about" },
 } as const satisfies Record<string, Record<Locale, string>>;
 
@@ -23,6 +24,18 @@ export function localizedPath(key: RouteKey, locale: Locale): string {
 // itself: it takes a dynamic `slug`, not a fixed per-locale path.
 export function projectDetailPath(slug: string, locale: Locale): string {
   return `${localizedPath("projects", locale)}/${slug}`;
+}
+
+// Milestone detail is *not* nested under `career`/`trayectoria` (plan §7):
+// it's its own top-level segment, with no entry in `routeMap` since — like
+// project detail — it takes a dynamic `slug` rather than a fixed path.
+export const milestoneSegment: Record<Locale, string> = {
+  es: "hitos",
+  en: "milestones",
+};
+
+export function milestoneDetailPath(slug: string, locale: Locale): string {
+  return `/${locale}/${milestoneSegment[locale]}/${slug}`;
 }
 
 // Every static path the site needs prerendered: the root redirect stub plus

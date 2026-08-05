@@ -16,6 +16,11 @@ export const es = {
       description:
         "Proyectos y casos de estudio de Aquiles Cancinos: sistemas completos de interfaz, API, datos, seguridad y despliegue.",
     },
+    career: {
+      title: "Trayectoria — Aquiles Cancinos",
+      description:
+        "Experiencia, educación e hitos verificables de Aquiles Cancinos en una línea de tiempo.",
+    },
     about: {
       title: "Sobre mí — Aquiles Cancinos",
       description:
@@ -28,6 +33,7 @@ export const es = {
   nav: {
     skipToContent: "Saltar al contenido",
     projects: "Proyectos",
+    career: "Trayectoria",
     about: "Sobre mí",
   },
   theme: {
@@ -109,6 +115,49 @@ export const es = {
       screenshots: "Capturas",
       notTranslated:
         "Este caso de estudio todavía no está traducido a este idioma. Se muestra en el otro idioma disponible.",
+    },
+  },
+  career: {
+    heading: "Trayectoria",
+    intro:
+      "Experiencia, educación e hitos verificables, en una sola línea de tiempo. Filtrá por tipo.",
+    empty: "Todavía no hay entradas cargadas con este filtro.",
+    present: "Presente",
+    filters: {
+      type: "Tipo",
+      clear: "Limpiar filtro",
+    },
+    types: {
+      experience: "Experiencia",
+      education: "Educación",
+      milestone: "Hito",
+    },
+    experienceTypes: {
+      employment: "Empleo",
+      freelance: "Freelance",
+      internship: "Pasantía",
+      volunteer: "Voluntariado",
+    },
+    milestoneTypes: {
+      award: "Premio",
+      contest: "Concurso",
+      hackathon: "Hackathon",
+      talk: "Charla",
+      press: "Prensa",
+      publication: "Publicación",
+      conference: "Conferencia",
+    },
+    viewMilestone: "Ver hito",
+  },
+  milestone: {
+    detail: {
+      backToCareer: "Volver a trayectoria",
+      evidence: "Evidencia",
+      relatedProjects: "Proyecto relacionado",
+      date: "Fecha",
+      organization: "Organización",
+      notTranslated:
+        "Este hito todavía no está traducido a este idioma. Se muestra en el otro idioma disponible.",
     },
   },
   about: {

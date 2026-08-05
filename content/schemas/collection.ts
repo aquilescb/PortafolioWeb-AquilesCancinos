@@ -28,13 +28,18 @@ export function assertUniqueSlugs<T extends { slug: string }>(
 
 export function assertKnownRefs(
   refs: readonly EntityRef[],
-  knownSlugsByType: Record<EntityType, ReadonlySet<string>>,
+  // Partial, not a full `Record`: a data file only has to supply the known-
+  // slug sets for the entity types it actually references (e.g. `projects.ts`
+  // shouldn't have to enumerate a `milestone` set it never points at). A
+  // type with no entry here has no known slugs, so any ref of that type
+  // fails — the safe default, not a silent pass.
+  knownSlugsByType: Partial<Record<EntityType, ReadonlySet<string>>>,
   ctx: RefinementCtx,
   path: (string | number)[],
   ownerLabel: string,
 ): void {
   refs.forEach((ref, refIndex) => {
-    if (!knownSlugsByType[ref.type].has(ref.slug)) {
+    if (!(knownSlugsByType[ref.type] ?? new Set()).has(ref.slug)) {
       ctx.addIssue({
         code: "custom",
         path: [...path, refIndex],

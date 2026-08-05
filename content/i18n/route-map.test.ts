@@ -4,6 +4,7 @@ import {
   equivalentPath,
   getStaticPaths,
   localizedPath,
+  milestoneDetailPath,
   projectDetailPath,
 } from "./route-map";
 
@@ -16,6 +17,11 @@ describe("localizedPath", () => {
   it("builds the localized projects path for each locale", () => {
     expect(localizedPath("projects", "es")).toBe("/es/proyectos");
     expect(localizedPath("projects", "en")).toBe("/en/projects");
+  });
+
+  it("builds the localized career path for each locale", () => {
+    expect(localizedPath("career", "es")).toBe("/es/trayectoria");
+    expect(localizedPath("career", "en")).toBe("/en/career");
   });
 
   it("builds the localized about path for each locale", () => {
@@ -35,15 +41,28 @@ describe("projectDetailPath", () => {
   });
 });
 
+describe("milestoneDetailPath", () => {
+  it("builds the milestone path under its own segment, not under career", () => {
+    expect(milestoneDetailPath("salta-lab-winner", "es")).toBe(
+      "/es/hitos/salta-lab-winner",
+    );
+    expect(milestoneDetailPath("salta-lab-winner", "en")).toBe(
+      "/en/milestones/salta-lab-winner",
+    );
+  });
+});
+
 describe("getStaticPaths", () => {
   it("includes the root redirect stub and every route key in every locale", () => {
     expect(getStaticPaths()).toEqual([
       "/",
       "/es",
       "/es/proyectos",
+      "/es/trayectoria",
       "/es/sobre-mi",
       "/en",
       "/en/projects",
+      "/en/career",
       "/en/about",
     ]);
   });

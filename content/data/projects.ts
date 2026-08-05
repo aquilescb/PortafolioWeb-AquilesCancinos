@@ -5,7 +5,7 @@ import { projectSchema, type Project } from "../schemas/project";
 import { type EntityType } from "../schemas/shared";
 import { technologies } from "./technologies";
 
-const knownSlugsByType: Record<EntityType, ReadonlySet<string>> = {
+const knownSlugsByType: Partial<Record<EntityType, ReadonlySet<string>>> = {
   technology: new Set(technologies.map((technology) => technology.slug)),
 };
 

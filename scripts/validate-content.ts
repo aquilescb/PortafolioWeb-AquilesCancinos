@@ -14,9 +14,11 @@ import { pathToFileURL } from "node:url";
 import { z } from "zod";
 
 import type { Locale } from "../content/i18n/locale";
+import type { Milestone } from "../content/schemas/milestone";
 import type { Project } from "../content/schemas/project";
 
 const CASE_STUDIES_DIR = join(process.cwd(), "content", "case-studies");
+const MILESTONES_DIR = join(process.cwd(), "content", "milestones");
 const LOCALES: Locale[] = ["es", "en"];
 
 export function formatZodError(error: z.ZodError): string[] {
@@ -27,17 +29,31 @@ export function formatZodError(error: z.ZodError): string[] {
   );
 }
 
-export function checkCaseStudyFiles(projects: Project[]): string[] {
+interface DeclaredBodyItem {
+  slug: string;
+  declaration?: { es: boolean; en: boolean };
+}
+
+// Shared by `checkCaseStudyFiles` and `checkMilestoneBodyFiles`: both check
+// that a `localizedBodyDeclarationSchema` field's declared locales actually
+// have an `.mdx` file on disk, something Zod alone can't verify.
+function checkDeclaredBodyFiles(
+  baseDir: string,
+  relativeBaseDir: string,
+  bodyLabel: string,
+  ownerLabel: string,
+  items: DeclaredBodyItem[],
+): string[] {
   const errors: string[] = [];
-  for (const project of projects) {
-    if (!project.caseStudy) continue;
+  for (const item of items) {
+    if (!item.declaration) continue;
     for (const locale of LOCALES) {
-      if (!project.caseStudy[locale]) continue;
-      const path = join(CASE_STUDIES_DIR, project.slug, `${locale}.mdx`);
+      if (!item.declaration[locale]) continue;
+      const path = join(baseDir, item.slug, `${locale}.mdx`);
       if (!existsSync(path)) {
         errors.push(
-          `project "${project.slug}" declares a ${locale} case study but ` +
-            `content/case-studies/${project.slug}/${locale}.mdx is missing`,
+          `${ownerLabel} "${item.slug}" declares a ${locale} ${bodyLabel} but ` +
+            `${relativeBaseDir}/${item.slug}/${locale}.mdx is missing`,
         );
       }
     }
@@ -45,18 +61,54 @@ export function checkCaseStudyFiles(projects: Project[]): string[] {
   return errors;
 }
 
+export function checkCaseStudyFiles(projects: Project[]): string[] {
+  return checkDeclaredBodyFiles(
+    CASE_STUDIES_DIR,
+    "content/case-studies",
+    "case study",
+    "project",
+    projects.map((project) => ({
+      slug: project.slug,
+      declaration: project.caseStudy,
+    })),
+  );
+}
+
+export function checkMilestoneBodyFiles(milestones: Milestone[]): string[] {
+  return checkDeclaredBodyFiles(
+    MILESTONES_DIR,
+    "content/milestones",
+    "body",
+    "milestone",
+    milestones.map((milestone) => ({
+      slug: milestone.slug,
+      declaration: milestone.body,
+    })),
+  );
+}
+
 async function main(): Promise<void> {
   const errors: string[] = [];
   let projectCount = 0;
+  let experienceCount = 0;
+  let educationCount = 0;
+  let milestoneCount = 0;
 
   try {
-    // Importing this module parses every project (and, transitively, every
+    // Importing these modules parses every entity (and, transitively, every
     // technology) with Zod: schema conformance, duplicate slugs, relation
     // integrity, locale parity, https-only URLs and the private/
     // repositoryUrl conflict all throw from here if anything is wrong.
     const { projects } = await import("../content/data/projects");
+    const { experiences } = await import("../content/data/experience");
+    const { education } = await import("../content/data/education");
+    const { milestones } = await import("../content/data/milestones");
     projectCount = projects.length;
+    experienceCount = experiences.length;
+    educationCount = education.length;
+    milestoneCount = milestones.length;
     errors.push(...checkCaseStudyFiles(projects));
+    errors.push(...checkMilestoneBodyFiles(milestones));
   } catch (error) {
     if (error instanceof z.ZodError) {
       errors.push(...formatZodError(error));
@@ -72,7 +124,11 @@ async function main(): Promise<void> {
     return;
   }
 
-  console.log(`✓ content validation passed (${projectCount} project(s))`);
+  console.log(
+    `✓ content validation passed (${projectCount} project(s), ` +
+      `${experienceCount} experience(s), ${educationCount} education entry(ies), ` +
+      `${milestoneCount} milestone(s))`,
+  );
 }
 
 // Only run when executed directly (`tsx scripts/validate-content.ts`), not

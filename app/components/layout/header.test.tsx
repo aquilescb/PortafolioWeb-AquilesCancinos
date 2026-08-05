@@ -25,6 +25,15 @@ describe("Header", () => {
     );
   });
 
+  it("links to the localized career page", () => {
+    const Stub = createRoutesStub([{ path: "/es", Component: Header }]);
+    render(<Stub initialEntries={["/es"]} />);
+
+    expect(
+      screen.getByRole("link", { name: "Trayectoria" }),
+    ).toHaveAttribute("href", "/es/trayectoria");
+  });
+
   it("links to the localized about page", () => {
     const Stub = createRoutesStub([{ path: "/es", Component: Header }]);
     render(<Stub initialEntries={["/es"]} />);
