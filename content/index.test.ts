@@ -170,7 +170,41 @@ vi.mock("./data/milestones", () => ({
           kind: "press",
         },
       ],
+      relatedProjects: [{ type: "project", slug: "beta" }],
+      videoId: "dQw4w9WgXcQ",
+    },
+    {
+      slug: "no-own-page",
+      title: { es: "Sin página", en: "No own page" },
+      type: "press",
+      date: "2025-01-01",
+      summary: { es: "Resumen", en: "Summary" },
+      hasOwnPage: false,
+      evidence: [
+        {
+          url: "https://example.com/press",
+          label: { es: "Prensa", en: "Press" },
+          kind: "press",
+        },
+      ],
       relatedProjects: [],
+    },
+    {
+      slug: "sample-milestone",
+      title: { es: "Muestra", en: "Sample" },
+      type: "publication",
+      date: "2020-01-01",
+      summary: { es: "Resumen", en: "Summary" },
+      hasOwnPage: false,
+      evidence: [
+        {
+          url: "https://example.com/sample",
+          label: { es: "Muestra", en: "Sample" },
+          kind: "press",
+        },
+      ],
+      relatedProjects: [],
+      body: { es: true, en: true },
     },
   ],
 }));
@@ -183,6 +217,9 @@ const {
   getAllPrerenderPaths,
   getCareerTimeline,
   getContact,
+  getMilestoneBody,
+  getMilestoneBySlug,
+  hasMilestonePages,
   hasProjects,
   resolveCaseStudyLocale,
 } = await import("./index");
@@ -276,7 +313,9 @@ describe("getCareerTimeline", () => {
       "ongoing-freelance",
       "computer-engineering",
       "salta-lab-winner", // 2025-11-15
+      "no-own-page", // 2025-01-01
       "acme-backend-intern", // ended 2024-06
+      "sample-milestone", // 2020-01-01
     ]);
   });
 
@@ -299,12 +338,47 @@ describe("getCareerTimeline", () => {
 
   it("filters by entry type", () => {
     const timeline = getCareerTimeline("en", { type: "milestone" });
-    expect(timeline.map((entry) => entry.slug)).toEqual(["salta-lab-winner"]);
+    expect(timeline.map((entry) => entry.slug)).toEqual([
+      "salta-lab-winner",
+      "no-own-page",
+      "sample-milestone",
+    ]);
+  });
+});
+
+describe("hasMilestonePages", () => {
+  it("is true once at least one milestone declares hasOwnPage", () => {
+    expect(hasMilestonePages()).toBe(true);
+  });
+});
+
+describe("getMilestoneBySlug", () => {
+  it("returns null for an unknown slug", () => {
+    expect(getMilestoneBySlug("does-not-exist", "en")).toBeNull();
+  });
+
+  it("returns full detail, resolving evidence labels and related projects", () => {
+    const detail = getMilestoneBySlug("salta-lab-winner", "en");
+
+    expect(detail?.title).toBe("Salta Lab winner");
+    expect(detail?.type).toBe("contest");
+    expect(detail?.evidence).toEqual([
+      { url: "https://example.com", label: "Note", kind: "press" },
+    ]);
+    expect(detail?.relatedProjects.map((project) => project.slug)).toEqual([
+      "beta",
+    ]);
+    expect(detail?.videoId).toBe("dQw4w9WgXcQ");
+  });
+
+  it("resolves the requested locale for related projects", () => {
+    const detail = getMilestoneBySlug("salta-lab-winner", "es");
+    expect(detail?.relatedProjects[0]?.title).toBe("Beta");
   });
 });
 
 describe("getAllPrerenderPaths", () => {
-  it("includes the static routes plus one detail path per project per locale", () => {
+  it("includes the static routes plus one detail path per project per locale, plus milestone pages", () => {
     const paths = getAllPrerenderPaths();
 
     expect(paths).toEqual(
@@ -319,10 +393,16 @@ describe("getAllPrerenderPaths", () => {
         "/en/projects/beta",
         "/es/proyectos/gamma",
         "/en/projects/gamma",
+        "/es/hitos/salta-lab-winner",
+        "/en/milestones/salta-lab-winner",
       ]),
     );
-    // 9 static routes (root + home/projects/career/about x 2 locales) + 5 projects x 2 locales = 19
-    expect(paths).toHaveLength(19);
+    // Only "salta-lab-winner" has hasOwnPage: true — "no-own-page" is
+    // deliberately excluded.
+    expect(paths).not.toContain("/es/hitos/no-own-page");
+    // 9 static routes (root + home/projects/career/about x 2 locales) + 5
+    // projects x 2 locales + 1 milestone with hasOwnPage x 2 locales = 21
+    expect(paths).toHaveLength(21);
   });
 });
 
@@ -377,5 +457,22 @@ describe("getCaseStudy", () => {
 
   it("returns null for an unknown project", async () => {
     expect(await getCaseStudy("does-not-exist", "en")).toBeNull();
+  });
+});
+
+describe("getMilestoneBody", () => {
+  it("loads the compiled MDX component for a fully bilingual milestone body", async () => {
+    const result = await getMilestoneBody("sample-milestone", "es");
+    expect(result?.locale).toBe("es");
+    expect(result?.isFallback).toBe(false);
+    expect(typeof result?.Component).toBe("function");
+  });
+
+  it("returns null for a milestone without a declared body", async () => {
+    expect(await getMilestoneBody("salta-lab-winner", "en")).toBeNull();
+  });
+
+  it("returns null for an unknown milestone", async () => {
+    expect(await getMilestoneBody("does-not-exist", "en")).toBeNull();
   });
 });

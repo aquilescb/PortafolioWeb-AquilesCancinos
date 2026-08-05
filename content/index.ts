@@ -12,7 +12,11 @@ import { experiences } from "./data/experience";
 import { milestones } from "./data/milestones";
 import { projects } from "./data/projects";
 import { technologies } from "./data/technologies";
-import { getStaticPaths, projectDetailPath } from "./i18n/route-map";
+import {
+  getStaticPaths,
+  milestoneDetailPath,
+  projectDetailPath,
+} from "./i18n/route-map";
 import { LOCALES, type Locale } from "./i18n/locale";
 import type { SocialLink } from "./schemas/contact";
 import type { Education } from "./schemas/education";
@@ -184,6 +188,73 @@ export function getProjectBySlug(
   };
 }
 
+function resolveProjects(
+  refs: Milestone["relatedProjects"],
+  locale: Locale,
+): ProjectSummary[] {
+  const bySlug = new Map(projects.map((project) => [project.slug, project]));
+  return refs
+    .map((ref) => bySlug.get(ref.slug))
+    .filter((project): project is Project => project !== undefined)
+    .map((project) => toSummary(project, locale));
+}
+
+export interface MilestoneEvidenceLink {
+  url: string;
+  label: string;
+  kind: Milestone["evidence"][number]["kind"];
+  publisher?: string;
+  date?: string;
+}
+
+export interface MilestoneDetail {
+  slug: string;
+  title: string;
+  type: Milestone["type"];
+  date: string;
+  organization?: string;
+  summary: string;
+  evidence: MilestoneEvidenceLink[];
+  videoId?: string;
+  relatedProjects: ProjectSummary[];
+  hasBody: boolean;
+}
+
+// `app/routes.ts` reads this at route-config time, mirroring `hasProjects`:
+// with `ssr:false`, a route with a `loader` must be matched by at least one
+// prerender path, which is impossible while no milestone declares
+// `hasOwnPage: true`.
+export function hasMilestonePages(): boolean {
+  return milestones.some((milestone) => milestone.hasOwnPage);
+}
+
+export function getMilestoneBySlug(
+  slug: string,
+  locale: Locale,
+): MilestoneDetail | null {
+  const milestone = milestones.find((candidate) => candidate.slug === slug);
+  if (!milestone) return null;
+
+  return {
+    slug: milestone.slug,
+    title: milestone.title[locale],
+    type: milestone.type,
+    date: milestone.date,
+    organization: milestone.organization,
+    summary: milestone.summary[locale],
+    evidence: milestone.evidence.map((link) => ({
+      url: link.url,
+      label: link.label[locale],
+      kind: link.kind,
+      publisher: link.publisher,
+      date: link.date,
+    })),
+    videoId: milestone.videoId,
+    relatedProjects: resolveProjects(milestone.relatedProjects, locale),
+    hasBody: milestone.body !== undefined,
+  };
+}
+
 export type CareerEntryType = "experience" | "education" | "milestone";
 
 // A common shape for the unified `/trayectoria` timeline, so the route and
@@ -267,14 +338,20 @@ export function getCareerTimeline(
 }
 
 // Every static path the prerenderer needs, both locales: the fixed routes
-// in `routeMap` plus one project detail path per project per locale. The
-// same list feeds `scripts/generate-sitemap.ts`, so prerender output and
-// the sitemap can never drift apart.
+// in `routeMap` plus one project detail path per project per locale, plus
+// one milestone detail path per milestone with `hasOwnPage`. The same list
+// feeds `scripts/generate-sitemap.ts`, so prerender output and the sitemap
+// can never drift apart.
 export function getAllPrerenderPaths(): string[] {
   const projectPaths = LOCALES.flatMap((locale) =>
     projects.map((project) => projectDetailPath(project.slug, locale)),
   );
-  return [...getStaticPaths(), ...projectPaths];
+  const milestonePaths = LOCALES.flatMap((locale) =>
+    milestones
+      .filter((milestone) => milestone.hasOwnPage)
+      .map((milestone) => milestoneDetailPath(milestone.slug, locale)),
+  );
+  return [...getStaticPaths(), ...projectPaths, ...milestonePaths];
 }
 
 const caseStudiesDir = join(
@@ -345,6 +422,42 @@ export async function getCaseStudy(
 
   return {
     Component: await importCaseStudy(slug, resolved.locale),
+    locale: resolved.locale,
+    isFallback: resolved.isFallback,
+  };
+}
+
+const milestonesDir = join(
+  dirname(fileURLToPath(import.meta.url)),
+  "milestones",
+);
+
+export function milestoneBodyFileExists(slug: string, locale: Locale): boolean {
+  return existsSync(join(milestonesDir, slug, `${locale}.mdx`));
+}
+
+async function importMilestoneBody(slug: string, locale: Locale) {
+  const module = await import(`./milestones/${slug}/${locale}.mdx`);
+  return module.default;
+}
+
+// Loads a milestone's MDX body for the requested locale, falling back to the
+// other locale when only one is declared — same shape and fallback rules as
+// `getCaseStudy` above.
+export async function getMilestoneBody(
+  slug: string,
+  locale: Locale,
+): Promise<CaseStudyResult | null> {
+  const milestone = milestones.find((candidate) => candidate.slug === slug);
+  const resolved = resolveCaseStudyLocale(
+    milestone?.body,
+    locale,
+    (candidate) => milestoneBodyFileExists(slug, candidate),
+  );
+  if (!resolved) return null;
+
+  return {
+    Component: await importMilestoneBody(slug, resolved.locale),
     locale: resolved.locale,
     isFallback: resolved.isFallback,
   };

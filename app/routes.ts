@@ -5,9 +5,13 @@ import {
   route,
 } from "@react-router/dev/routes";
 
-import { hasProjects } from "../content";
+import { hasMilestonePages, hasProjects } from "../content";
 import { LOCALES, type Locale } from "../content/i18n/locale";
-import { routeMap, type RouteKey } from "../content/i18n/route-map";
+import {
+  milestoneSegment,
+  routeMap,
+  type RouteKey,
+} from "../content/i18n/route-map";
 
 // Maps each canonical route key to its component file. One entry per page;
 // `localizedRoutes` mounts the same file at both locales' paths.
@@ -41,6 +45,19 @@ function localizedRoutes(locale: Locale) {
             `${routeMap.projects[locale]}/:slug`,
             "routes/project-detail.tsx",
             { id: `project-detail-${locale}` },
+          ),
+        ]
+      : []),
+    // Milestone detail lives under its own top-level segment, not nested
+    // under `career` (plan §7) — same conditional-registration reasoning as
+    // project detail: only mounted once at least one milestone declares
+    // `hasOwnPage: true` (see `hasMilestonePages` in content/index.ts).
+    ...(hasMilestonePages()
+      ? [
+          route(
+            `${milestoneSegment[locale]}/:slug`,
+            "routes/milestone-detail.tsx",
+            { id: `milestone-detail-${locale}` },
           ),
         ]
       : []),

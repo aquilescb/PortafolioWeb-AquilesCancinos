@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 
 import {
   globalMetaTags,
+  milestoneBreadcrumbJsonLd,
+  milestoneJsonLd,
   personJsonLd,
   projectBreadcrumbJsonLd,
   projectCreativeWorkJsonLd,
@@ -121,6 +123,81 @@ describe("projectBreadcrumbJsonLd", () => {
         position: 3,
         name: "Inventory System",
         item: "https://portafolio-web-aquiles-cancinos.vercel.app/en/projects/inventory-system",
+      },
+    ]);
+  });
+});
+
+const contestMilestone = {
+  slug: "salta-lab-winner",
+  title: "Salta Lab winner",
+  summary: "Won first place at the Salta Lab contest.",
+  date: "2025-11-15",
+  organization: "Salta Lab",
+  type: "contest" as const,
+};
+
+const pressMilestone = {
+  slug: "local-press-feature",
+  title: "Local press feature",
+  summary: "Featured in a local newspaper.",
+  date: "2025-06-01",
+  type: "press" as const,
+};
+
+describe("milestoneJsonLd", () => {
+  it("builds an Event for a contest, including its organizer", () => {
+    expect(milestoneJsonLd(contestMilestone, "es")).toMatchObject({
+      "@context": "https://schema.org",
+      "@type": "Event",
+      name: "Salta Lab winner",
+      description: "Won first place at the Salta Lab contest.",
+      startDate: "2025-11-15",
+      url: "https://portafolio-web-aquiles-cancinos.vercel.app/es/hitos/salta-lab-winner",
+      inLanguage: "es",
+      organizer: { "@type": "Organization", name: "Salta Lab" },
+    });
+  });
+
+  it("builds a CreativeWork for a press milestone, with no organizer", () => {
+    const jsonLd = milestoneJsonLd(pressMilestone, "en");
+
+    expect(jsonLd).toMatchObject({
+      "@context": "https://schema.org",
+      "@type": "CreativeWork",
+      name: "Local press feature",
+      datePublished: "2025-06-01",
+      url: "https://portafolio-web-aquiles-cancinos.vercel.app/en/milestones/local-press-feature",
+      author: { "@type": "Person", name: "Aquiles Cancinos" },
+    });
+    expect(jsonLd).not.toHaveProperty("organizer");
+    expect(jsonLd).not.toHaveProperty("publisher");
+  });
+});
+
+describe("milestoneBreadcrumbJsonLd", () => {
+  it("builds a three-level breadcrumb ending at the milestone", () => {
+    const jsonLd = milestoneBreadcrumbJsonLd(contestMilestone, "en");
+
+    expect(jsonLd["@type"]).toBe("BreadcrumbList");
+    expect(jsonLd.itemListElement).toEqual([
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Aquiles Cancinos",
+        item: "https://portafolio-web-aquiles-cancinos.vercel.app/en",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Career",
+        item: "https://portafolio-web-aquiles-cancinos.vercel.app/en/career",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: "Salta Lab winner",
+        item: "https://portafolio-web-aquiles-cancinos.vercel.app/en/milestones/salta-lab-winner",
       },
     ]);
   });
