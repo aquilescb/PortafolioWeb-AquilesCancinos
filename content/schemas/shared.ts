@@ -26,8 +26,8 @@ export const httpsUrlSchema = z
   });
 
 // Entity types that can be referenced by another entity. Extended as later
-// phases introduce new referenceable entities (skill, course, milestone...).
-export const ENTITY_TYPES = ["technology"] as const;
+// phases introduce new referenceable entities (skill, course...).
+export const ENTITY_TYPES = ["technology", "project"] as const;
 export type EntityType = (typeof ENTITY_TYPES)[number];
 
 // A typed pointer to another entity. The content validator resolves every
@@ -37,3 +37,41 @@ export const entityRefSchema = z.object({
   slug: slugSchema,
 });
 export type EntityRef = z.infer<typeof entityRefSchema>;
+
+// YYYY-MM-DD or YYYY-MM: some entities have an exact day (an award), others
+// only a known month (a job that started "sometime in March"). Never widen
+// this to accept a guess — an unknown date is left absent (CLAUDE.md).
+export const isoDateSchema = z
+  .string()
+  .regex(/^\d{4}-\d{2}(-\d{2})?$/, "date must be YYYY-MM or YYYY-MM-DD");
+
+// Declares which locales have full-length MDX prose for an entity — shared
+// by `Project.caseStudy` and `Milestone.body`. The content validator checks
+// the declared files actually exist; `content/index.ts` loads them (with a
+// same-language fallback when only one locale is declared).
+export const localizedBodyDeclarationSchema = z
+  .object({ es: z.boolean(), en: z.boolean() })
+  .refine((value) => value.es || value.en, {
+    message: "must declare at least one locale",
+  });
+
+// A link to evidence outside the repository (a press article, a video, a
+// verification page). Milestones require at least one of these — evidence
+// over self-reported claims (CLAUDE.md content rules).
+export const EXTERNAL_LINK_KINDS = [
+  "repo",
+  "demo",
+  "press",
+  "video",
+  "credential",
+] as const;
+
+export const externalLinkSchema = z.object({
+  url: httpsUrlSchema,
+  label: localizedStringSchema,
+  kind: z.enum(EXTERNAL_LINK_KINDS),
+  publisher: z.string().min(1).optional(),
+  date: isoDateSchema.optional(),
+});
+export type ExternalLink = z.infer<typeof externalLinkSchema>;
+export type ExternalLinkKind = (typeof EXTERNAL_LINK_KINDS)[number];

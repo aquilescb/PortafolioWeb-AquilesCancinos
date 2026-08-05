@@ -34,9 +34,8 @@ const refsSchema = z
   .superRefine((value, ctx) =>
     assertKnownRefs(
       value.refs,
-      { technology: new Set(["typescript"]) } satisfies Record<
-        EntityType,
-        ReadonlySet<string>
+      { technology: new Set(["typescript"]) } satisfies Partial<
+        Record<EntityType, ReadonlySet<string>>
       >,
       ctx,
       ["refs"],
@@ -62,5 +61,28 @@ describe("assertKnownRefs", () => {
         'owner references unknown technology "cobol"',
       );
     }
+  });
+
+  it("fails every ref of a type missing from a partial known-slugs map", () => {
+    const partialRefsSchema = z
+      .object({
+        refs: z.array(
+          z.object({ type: z.literal("project"), slug: z.string() }),
+        ),
+      })
+      .superRefine((value, ctx) =>
+        assertKnownRefs(
+          value.refs,
+          {} satisfies Partial<Record<EntityType, ReadonlySet<string>>>,
+          ctx,
+          ["refs"],
+          "owner",
+        ),
+      );
+
+    const result = partialRefsSchema.safeParse({
+      refs: [{ type: "project", slug: "inventory-system" }],
+    });
+    expect(result.success).toBe(false);
   });
 });

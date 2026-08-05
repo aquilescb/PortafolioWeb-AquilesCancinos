@@ -3,6 +3,7 @@ import { z } from "zod";
 import {
   entityRefSchema,
   httpsUrlSchema,
+  localizedBodyDeclarationSchema,
   localizedStringSchema,
   slugSchema,
 } from "./shared";
@@ -16,17 +17,6 @@ export const PROJECT_CONTEXTS = [
   "experimental",
 ] as const;
 export const PROJECT_VISIBILITIES = ["public", "private"] as const;
-
-// Declares which locales have a full-length MDX case study for this project,
-// under `content/case-studies/<slug>/<locale>.mdx`. The content validator
-// checks the declared files actually exist; `getCaseStudy` in
-// `content/index.ts` loads them (with a same-language fallback when only one
-// locale is declared).
-const caseStudySchema = z
-  .object({ es: z.boolean(), en: z.boolean() })
-  .refine((value) => value.es || value.en, {
-    message: "caseStudy must declare at least one locale",
-  });
 
 export const projectSchema = z
   .object({
@@ -50,7 +40,7 @@ export const projectSchema = z
     cover: z.string().min(1),
     screenshots: z.array(z.string().min(1)).default([]),
     videoId: z.string().min(1).optional(),
-    caseStudy: caseStudySchema.optional(),
+    caseStudy: localizedBodyDeclarationSchema.optional(),
     featuredOrder: z.number().int().positive().optional(),
   })
   .refine(
