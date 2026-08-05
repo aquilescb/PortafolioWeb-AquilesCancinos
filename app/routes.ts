@@ -5,6 +5,7 @@ import {
   route,
 } from "@react-router/dev/routes";
 
+import { hasProjects } from "../content";
 import { LOCALES, type Locale } from "../content/i18n/locale";
 import { routeMap, type RouteKey } from "../content/i18n/route-map";
 
@@ -12,6 +13,8 @@ import { routeMap, type RouteKey } from "../content/i18n/route-map";
 // `localizedRoutes` mounts the same file at both locales' paths.
 const routeFiles: Record<RouteKey, string> = {
   home: "routes/home.tsx",
+  projects: "routes/projects.tsx",
+  about: "routes/about.tsx",
 };
 
 const routeKeys = Object.keys(routeMap) as RouteKey[];
@@ -25,6 +28,21 @@ function localizedRoutes(locale: Locale) {
         ? route(segment, file, { id: `${key}-${locale}` })
         : index(file, { id: `${key}-${locale}` });
     }),
+    // Project detail takes a dynamic `slug`, so it isn't in `routeMap`
+    // (which only covers fixed per-locale paths) — mounted directly under
+    // the same localized `projects` segment instead. Only registered once a
+    // real project exists: with `ssr:false`, a route with a `loader` must be
+    // matched by at least one prerender path, which is impossible while
+    // `content/data/projects.ts` is empty (see `hasProjects` in content/index.ts).
+    ...(hasProjects()
+      ? [
+          route(
+            `${routeMap.projects[locale]}/:slug`,
+            "routes/project-detail.tsx",
+            { id: `project-detail-${locale}` },
+          ),
+        ]
+      : []),
     route("*", "routes/not-found.tsx", { id: `not-found-${locale}` }),
   ]);
 }

@@ -1,17 +1,51 @@
 import { describe, expect, it } from "vitest";
 
-import { equivalentPath, getStaticPaths, localizedPath } from "./route-map";
+import {
+  equivalentPath,
+  getStaticPaths,
+  localizedPath,
+  projectDetailPath,
+} from "./route-map";
 
 describe("localizedPath", () => {
   it("builds the home path for each locale without a trailing segment", () => {
     expect(localizedPath("home", "es")).toBe("/es");
     expect(localizedPath("home", "en")).toBe("/en");
   });
+
+  it("builds the localized projects path for each locale", () => {
+    expect(localizedPath("projects", "es")).toBe("/es/proyectos");
+    expect(localizedPath("projects", "en")).toBe("/en/projects");
+  });
+
+  it("builds the localized about path for each locale", () => {
+    expect(localizedPath("about", "es")).toBe("/es/sobre-mi");
+    expect(localizedPath("about", "en")).toBe("/en/about");
+  });
+});
+
+describe("projectDetailPath", () => {
+  it("appends the slug to the localized projects path", () => {
+    expect(projectDetailPath("inventory-system", "es")).toBe(
+      "/es/proyectos/inventory-system",
+    );
+    expect(projectDetailPath("inventory-system", "en")).toBe(
+      "/en/projects/inventory-system",
+    );
+  });
 });
 
 describe("getStaticPaths", () => {
   it("includes the root redirect stub and every route key in every locale", () => {
-    expect(getStaticPaths()).toEqual(["/", "/es", "/en"]);
+    expect(getStaticPaths()).toEqual([
+      "/",
+      "/es",
+      "/es/proyectos",
+      "/es/sobre-mi",
+      "/en",
+      "/en/projects",
+      "/en/about",
+    ]);
   });
 });
 

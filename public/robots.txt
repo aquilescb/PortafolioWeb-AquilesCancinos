@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://portafolio-web-aquiles-cancinos.vercel.app/sitemap.xml

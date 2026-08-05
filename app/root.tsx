@@ -8,11 +8,33 @@ import {
 } from "react-router";
 
 import type { Route } from "./+types/root";
+import { getContact } from "../content";
+import { localeFromPathname } from "../content/i18n/locale";
 import { Footer } from "./components/layout/footer";
 import { Header } from "./components/layout/header";
 import { SkipLink } from "./components/layout/skip-link";
 import { useLocale } from "./i18n/use-locale";
+import { personJsonLd, websiteJsonLd } from "./seo/json-ld";
 import "./app.css";
+
+// Global structured data (Person + WebSite) on every page. Content reads
+// stay in the loader, not `meta` itself: unlike `loader`, `meta` also runs
+// client-side on navigations, so calling `getContact` directly here would
+// pull the content layer into the client bundle.
+export async function loader({ request }: Route.LoaderArgs) {
+  const locale = localeFromPathname(new URL(request.url).pathname);
+  return { contact: getContact(locale) };
+}
+
+export function meta({ location, loaderData }: Route.MetaArgs) {
+  if (!loaderData) return [];
+  const locale = localeFromPathname(location.pathname);
+
+  return [
+    { "script:ld+json": personJsonLd(locale, loaderData.contact) },
+    { "script:ld+json": websiteJsonLd(locale) },
+  ];
+}
 
 export const links: Route.LinksFunction = () => [
   {
