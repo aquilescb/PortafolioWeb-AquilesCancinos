@@ -23,6 +23,9 @@ export function Header() {
             <Link to={localizedPath("projects", locale)} className="text-sm">
               {t.nav.projects}
             </Link>
+            <Link to={localizedPath("career", locale)} className="text-sm">
+              {t.nav.career}
+            </Link>
             <Link to={localizedPath("about", locale)} className="text-sm">
               {t.nav.about}
             </Link>

@@ -113,12 +113,75 @@ vi.mock("./data/projects", () => ({
   ],
 }));
 
+vi.mock("./data/experience", () => ({
+  experiences: [
+    {
+      slug: "acme-backend-intern",
+      organization: "Acme",
+      role: { es: "Pasante", en: "Intern" },
+      type: "internship",
+      startDate: "2024-01",
+      endDate: "2024-06",
+      responsibilities: [{ es: "Mantener la API", en: "Maintain the API" }],
+      achievements: [],
+      technologies: [],
+    },
+    {
+      slug: "ongoing-freelance",
+      organization: "Freelance",
+      role: { es: "Desarrollador", en: "Developer" },
+      type: "freelance",
+      startDate: "2025-01",
+      responsibilities: [{ es: "Mantener sitios", en: "Maintain sites" }],
+      achievements: [],
+      technologies: [],
+    },
+  ],
+}));
+
+vi.mock("./data/education", () => ({
+  education: [
+    {
+      slug: "computer-engineering",
+      institution: "Universidad",
+      degree: { es: "Ingeniería Informática", en: "Computer Engineering" },
+      startDate: "2022-03",
+      status: "in-progress",
+      highlights: [],
+      focusAreas: [],
+      distinctions: [],
+    },
+  ],
+}));
+
+vi.mock("./data/milestones", () => ({
+  milestones: [
+    {
+      slug: "salta-lab-winner",
+      title: { es: "Ganador de Salta Lab", en: "Salta Lab winner" },
+      type: "contest",
+      date: "2025-11-15",
+      summary: { es: "Resumen", en: "Summary" },
+      hasOwnPage: true,
+      evidence: [
+        {
+          url: "https://example.com",
+          label: { es: "Nota", en: "Note" },
+          kind: "press",
+        },
+      ],
+      relatedProjects: [],
+    },
+  ],
+}));
+
 const {
   getFeaturedProjects,
   getAllProjects,
   getProjectBySlug,
   getCaseStudy,
   getAllPrerenderPaths,
+  getCareerTimeline,
   getContact,
   hasProjects,
   resolveCaseStudyLocale,
@@ -202,6 +265,44 @@ describe("getProjectBySlug", () => {
   });
 });
 
+describe("getCareerTimeline", () => {
+  it("merges experience, education and milestones, most recent first", () => {
+    const timeline = getCareerTimeline("en");
+
+    // "ongoing-freelance" and "computer-engineering" both have no endDate
+    // (still in progress), so they tie at the top; between them the stable
+    // sort keeps their original relative order (experience before education).
+    expect(timeline.map((entry) => entry.slug)).toEqual([
+      "ongoing-freelance",
+      "computer-engineering",
+      "salta-lab-winner", // 2025-11-15
+      "acme-backend-intern", // ended 2024-06
+    ]);
+  });
+
+  it("resolves the requested locale for each entry type", () => {
+    const timeline = getCareerTimeline("es");
+    const milestone = timeline.find(
+      (entry) => entry.slug === "salta-lab-winner",
+    );
+    const experience = timeline.find(
+      (entry) => entry.slug === "acme-backend-intern",
+    );
+    const education = timeline.find(
+      (entry) => entry.slug === "computer-engineering",
+    );
+
+    expect(milestone?.title).toBe("Ganador de Salta Lab");
+    expect(experience?.title).toBe("Pasante");
+    expect(education?.title).toBe("Ingeniería Informática");
+  });
+
+  it("filters by entry type", () => {
+    const timeline = getCareerTimeline("en", { type: "milestone" });
+    expect(timeline.map((entry) => entry.slug)).toEqual(["salta-lab-winner"]);
+  });
+});
+
 describe("getAllPrerenderPaths", () => {
   it("includes the static routes plus one detail path per project per locale", () => {
     const paths = getAllPrerenderPaths();
@@ -220,8 +321,8 @@ describe("getAllPrerenderPaths", () => {
         "/en/projects/gamma",
       ]),
     );
-    // 7 static routes (root + home/projects/about x 2 locales) + 5 projects x 2 locales = 17
-    expect(paths).toHaveLength(17);
+    // 9 static routes (root + home/projects/career/about x 2 locales) + 5 projects x 2 locales = 19
+    expect(paths).toHaveLength(19);
   });
 });
 

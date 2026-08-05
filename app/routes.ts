@@ -14,6 +14,7 @@ import { routeMap, type RouteKey } from "../content/i18n/route-map";
 const routeFiles: Record<RouteKey, string> = {
   home: "routes/home.tsx",
   projects: "routes/projects.tsx",
+  career: "routes/career.tsx",
   about: "routes/about.tsx",
 };
 

@@ -7,11 +7,17 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { contact } from "./data/contact";
+import { education } from "./data/education";
+import { experiences } from "./data/experience";
+import { milestones } from "./data/milestones";
 import { projects } from "./data/projects";
 import { technologies } from "./data/technologies";
 import { getStaticPaths, projectDetailPath } from "./i18n/route-map";
 import { LOCALES, type Locale } from "./i18n/locale";
 import type { SocialLink } from "./schemas/contact";
+import type { Education } from "./schemas/education";
+import type { Experience } from "./schemas/experience";
+import type { Milestone } from "./schemas/milestone";
 import type { Project, ProjectContext } from "./schemas/project";
 import type { Technology } from "./schemas/technology";
 
@@ -176,6 +182,88 @@ export function getProjectBySlug(
     videoId: project.videoId,
     hasCaseStudy: project.caseStudy !== undefined,
   };
+}
+
+export type CareerEntryType = "experience" | "education" | "milestone";
+
+// A common shape for the unified `/trayectoria` timeline, so the route and
+// its components render Experience/Education/Milestone without knowing
+// which is which beyond `type` and the badge/link it implies.
+export interface CareerEntry {
+  type: CareerEntryType;
+  slug: string;
+  title: string;
+  organization?: string;
+  startDate: string;
+  endDate?: string;
+  summary?: string;
+  // Only meaningful for milestones — whether `/hitos/:slug` exists for it.
+  hasOwnPage?: boolean;
+}
+
+export interface CareerFilter {
+  type?: CareerEntryType;
+}
+
+function experienceToEntry(experience: Experience, locale: Locale): CareerEntry {
+  return {
+    type: "experience",
+    slug: experience.slug,
+    title: experience.role[locale],
+    organization: experience.organization,
+    startDate: experience.startDate,
+    endDate: experience.endDate,
+  };
+}
+
+function educationToEntry(entry: Education, locale: Locale): CareerEntry {
+  return {
+    type: "education",
+    slug: entry.slug,
+    title: entry.degree[locale],
+    organization: entry.institution,
+    startDate: entry.startDate,
+    endDate: entry.endDate,
+  };
+}
+
+function milestoneToEntry(milestone: Milestone, locale: Locale): CareerEntry {
+  return {
+    type: "milestone",
+    slug: milestone.slug,
+    title: milestone.title[locale],
+    organization: milestone.organization,
+    startDate: milestone.date,
+    summary: milestone.summary[locale],
+    hasOwnPage: milestone.hasOwnPage,
+  };
+}
+
+// An experience/education entry with no `endDate` is ongoing ("present") and
+// sorts first, ahead of anything with a real end date. A milestone always
+// has a single fixed `date` (its `startDate` here), not an open span.
+function timelineSortKey(entry: CareerEntry): string {
+  if (entry.type === "milestone") return entry.startDate;
+  return entry.endDate ?? "9999-12";
+}
+
+export function getCareerTimeline(
+  locale: Locale,
+  filter?: CareerFilter,
+): CareerEntry[] {
+  const entries: CareerEntry[] = [
+    ...experiences.map((entry) => experienceToEntry(entry, locale)),
+    ...education.map((entry) => educationToEntry(entry, locale)),
+    ...milestones.map((entry) => milestoneToEntry(entry, locale)),
+  ];
+
+  const visible = filter?.type
+    ? entries.filter((entry) => entry.type === filter.type)
+    : entries;
+
+  return visible.sort((a, b) =>
+    timelineSortKey(b).localeCompare(timelineSortKey(a)),
+  );
 }
 
 // Every static path the prerenderer needs, both locales: the fixed routes
