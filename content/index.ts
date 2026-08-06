@@ -6,11 +6,14 @@ import { existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { certifications } from "./data/certifications";
 import { contact } from "./data/contact";
+import { courses } from "./data/courses";
 import { education } from "./data/education";
 import { experiences } from "./data/experience";
 import { milestones } from "./data/milestones";
 import { projects } from "./data/projects";
+import { skills } from "./data/skills";
 import { technologies } from "./data/technologies";
 import {
   getStaticPaths,
@@ -18,11 +21,14 @@ import {
   projectDetailPath,
 } from "./i18n/route-map";
 import { LOCALES, type Locale } from "./i18n/locale";
+import type { Certification } from "./schemas/certification";
 import type { SocialLink } from "./schemas/contact";
+import type { Course } from "./schemas/course";
 import type { Education } from "./schemas/education";
 import type { Experience } from "./schemas/experience";
 import type { Milestone } from "./schemas/milestone";
 import type { Project, ProjectContext } from "./schemas/project";
+import type { EntityRef } from "./schemas/shared";
 import type { Technology } from "./schemas/technology";
 
 export interface ProjectSummary {
@@ -337,6 +343,107 @@ export function getCareerTimeline(
 
   return visible.sort((a, b) =>
     timelineSortKey(b).localeCompare(timelineSortKey(a)),
+  );
+}
+
+export type LearningEntryKind = "course" | "certification";
+
+export interface LearningSkill {
+  slug: string;
+  name: string;
+}
+
+// A common shape for `/formacion`'s course and certification lists, so the
+// route and its components render either without knowing which is which
+// beyond `kind` and the fields that only certifications carry (mirrors
+// `CareerEntry` above).
+export interface LearningEntry {
+  kind: LearningEntryKind;
+  slug: string;
+  name: string;
+  provider: string;
+  category: string;
+  startDate: string;
+  endDate?: string;
+  status: Course["status"];
+  hours?: number;
+  relevance: number;
+  featured: boolean;
+  verificationUrl?: string;
+  credentialId?: string;
+  skills: LearningSkill[];
+  issuedAt?: string;
+  expiresAt?: string;
+  issuer?: string;
+  badgeUrl?: string;
+}
+
+function resolveSkills(refs: EntityRef[], locale: Locale): LearningSkill[] {
+  const bySlug = new Map(skills.map((skill) => [skill.slug, skill]));
+  return refs
+    .map((ref) => bySlug.get(ref.slug))
+    .filter((skill) => skill !== undefined)
+    .map((skill) => ({ slug: skill.slug, name: skill.name[locale] }));
+}
+
+function courseToLearningEntry(
+  course: Course,
+  locale: Locale,
+  kind: LearningEntryKind = "course",
+): LearningEntry {
+  return {
+    kind,
+    slug: course.slug,
+    name: course.name[locale],
+    provider: course.provider,
+    category: course.category,
+    startDate: course.startDate,
+    endDate: course.endDate,
+    status: course.status,
+    hours: course.hours,
+    relevance: course.relevance,
+    featured: course.featured,
+    verificationUrl: course.verificationUrl,
+    credentialId: course.credentialId,
+    skills: resolveSkills(course.skills, locale),
+  };
+}
+
+function certificationToLearningEntry(
+  certification: Certification,
+  locale: Locale,
+): LearningEntry {
+  return {
+    ...courseToLearningEntry(certification, locale, "certification"),
+    issuedAt: certification.issuedAt,
+    expiresAt: certification.expiresAt,
+    issuer: certification.issuer,
+    badgeUrl: certification.badgeUrl,
+  };
+}
+
+// A certification's issue date is its most meaningful date for ordering (it
+// marks when the credential was actually earned); a course has no such
+// milestone, so it falls back to `endDate`, or `startDate` while ongoing.
+function learningSortKey(entry: LearningEntry): string {
+  if (entry.kind === "certification") return entry.issuedAt ?? entry.startDate;
+  return entry.endDate ?? entry.startDate;
+}
+
+// Every course and certification, most recent first. No entity in this
+// section gets its own page (plan §7) — the `/formacion` route derives its
+// featured/certifications/complementary/archive views from this single list
+// client-side, the same pattern `getCareerTimeline` establishes above.
+export function getLearningEntries(locale: Locale): LearningEntry[] {
+  const entries: LearningEntry[] = [
+    ...courses.map((course) => courseToLearningEntry(course, locale)),
+    ...certifications.map((certification) =>
+      certificationToLearningEntry(certification, locale),
+    ),
+  ];
+
+  return entries.sort((a, b) =>
+    learningSortKey(b).localeCompare(learningSortKey(a)),
   );
 }
 

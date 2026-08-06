@@ -35,6 +35,16 @@ describe("Header", () => {
     );
   });
 
+  it("links to the localized learning page", () => {
+    const Stub = createRoutesStub([{ path: "/es", Component: Header }]);
+    render(<Stub initialEntries={["/es"]} />);
+
+    expect(screen.getByRole("link", { name: "Formación" })).toHaveAttribute(
+      "href",
+      "/es/formacion",
+    );
+  });
+
   it("links to the localized about page", () => {
     const Stub = createRoutesStub([{ path: "/es", Component: Header }]);
     render(<Stub initialEntries={["/es"]} />);

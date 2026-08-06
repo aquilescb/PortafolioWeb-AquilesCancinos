@@ -21,6 +21,11 @@ export const es = {
       description:
         "Experiencia, educación e hitos verificables de Aquiles Cancinos en una línea de tiempo.",
     },
+    learning: {
+      title: "Formación — Aquiles Cancinos",
+      description:
+        "Cursos, certificaciones profesionales y habilidades de Aquiles Cancinos, con evidencia y enlaces de verificación.",
+    },
     about: {
       title: "Sobre mí — Aquiles Cancinos",
       description:
@@ -34,6 +39,7 @@ export const es = {
     skipToContent: "Saltar al contenido",
     projects: "Proyectos",
     career: "Trayectoria",
+    learning: "Formación",
     about: "Sobre mí",
   },
   theme: {
@@ -158,6 +164,50 @@ export const es = {
       organization: "Organización",
       notTranslated:
         "Este hito todavía no está traducido a este idioma. Se muestra en el otro idioma disponible.",
+    },
+  },
+  learning: {
+    heading: "Formación",
+    intro:
+      "Cursos, certificaciones profesionales y habilidades, con evidencia y enlaces de verificación. Sin barras de porcentaje.",
+    sections: {
+      featured: "Destacados",
+      certifications: "Certificaciones profesionales",
+      complementary: "Formación complementaria",
+      archive: "Archivo completo",
+    },
+    empty: {
+      featured: "Todavía no hay formación destacada cargada.",
+      certifications: "Todavía no hay certificaciones cargadas.",
+      complementary: "Todavía no hay formación complementaria cargada.",
+      archive: "Ningún curso ni certificación coincide con estos filtros.",
+    },
+    kinds: {
+      course: "Curso",
+      certification: "Certificación",
+    },
+    status: {
+      "in-progress": "En curso",
+      completed: "Completado",
+    },
+    provider: "Plataforma",
+    hours: "Horas",
+    issuedAt: "Emitida",
+    expiresAt: "Vence",
+    issuer: "Emisor",
+    skills: "Habilidades",
+    verify: "Verificar",
+    filters: {
+      category: "Categoría",
+      kind: "Tipo",
+      skill: "Habilidad",
+      clear: "Limpiar filtros",
+      allCategories: "Todas las categorías",
+    },
+    search: {
+      label: "Buscar en el archivo",
+      placeholder: "Buscar por nombre, plataforma o categoría",
+      loading: "Cargando búsqueda…",
     },
   },
   about: {
