@@ -90,13 +90,13 @@ describe("About route", () => {
     expect(tags).toContainEqual({
       tagName: "link",
       rel: "canonical",
-      href: "/es/sobre-mi",
+      href: "https://portafolio-web-aquiles-cancinos.vercel.app/es/sobre-mi",
     });
     expect(tags).toContainEqual({
       tagName: "link",
       rel: "alternate",
       hrefLang: "en",
-      href: "/en/about",
+      href: "https://portafolio-web-aquiles-cancinos.vercel.app/en/about",
     });
   });
 });

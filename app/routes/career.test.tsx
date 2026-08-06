@@ -100,13 +100,13 @@ describe("Career route", () => {
     expect(tags).toContainEqual({
       tagName: "link",
       rel: "canonical",
-      href: "/es/trayectoria",
+      href: "https://portafolio-web-aquiles-cancinos.vercel.app/es/trayectoria",
     });
     expect(tags).toContainEqual({
       tagName: "link",
       rel: "alternate",
       hrefLang: "en",
-      href: "/en/career",
+      href: "https://portafolio-web-aquiles-cancinos.vercel.app/en/career",
     });
   });
 });

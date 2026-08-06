@@ -159,13 +159,13 @@ describe("Home route", () => {
     expect(tags).toContainEqual({
       tagName: "link",
       rel: "canonical",
-      href: "/es",
+      href: "https://portafolio-web-aquiles-cancinos.vercel.app/es",
     });
     expect(tags).toContainEqual({
       tagName: "link",
       rel: "alternate",
       hrefLang: "en",
-      href: "/en",
+      href: "https://portafolio-web-aquiles-cancinos.vercel.app/en",
     });
   });
 
