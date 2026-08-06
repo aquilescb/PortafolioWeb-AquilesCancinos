@@ -57,7 +57,7 @@ function renderLearning(initialEntry: string, data: LearningEntry[] = entries) {
 }
 
 describe("Learning route", () => {
-  it("renders a single top-level heading and the three sections", async () => {
+  it("renders a single top-level heading and the four sections", async () => {
     renderLearning("/es/formacion");
 
     expect(
@@ -77,6 +77,9 @@ describe("Learning route", () => {
         level: 2,
         name: "Formación complementaria",
       }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { level: 2, name: "Archivo completo" }),
     ).toBeInTheDocument();
   });
 
@@ -125,6 +128,11 @@ describe("Learning route", () => {
     ).toBeInTheDocument();
     expect(
       screen.getByText("Todavía no hay formación complementaria cargada."),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Ningún curso ni certificación coincide con estos filtros.",
+      ),
     ).toBeInTheDocument();
   });
 

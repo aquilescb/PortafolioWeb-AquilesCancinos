@@ -2,10 +2,12 @@ import type { Route } from "./+types/learning";
 import { getLearningEntries } from "@content";
 import { dictionaries } from "@content/i18n/dictionaries";
 import { localeFromPathname } from "@content/i18n/locale";
+import { LearningArchive } from "~/components/content/learning-archive";
 import { LearningEntryCard } from "~/components/content/learning-entry-card";
 import { buildRouteAlternates } from "~/seo/alternates";
 import { globalMetaTags } from "~/seo/json-ld";
 import { buildMeta } from "~/seo/meta";
+import { useLocale } from "~/i18n/use-locale";
 import { useTranslation } from "~/i18n/use-translation";
 import {
   getCertifications,
@@ -34,7 +36,16 @@ export function loader({ request }: Route.LoaderArgs) {
   return { entries: getLearningEntries(locale) };
 }
 
+// The archive's URL filters and search are applied client-side over the
+// entries the loader already returned (see `~/lib/learning-filters` and
+// `~/components/content/learning-archive`), so a filter or search change
+// must not trigger a pointless loader refetch (mirrors `career.tsx`).
+export function shouldRevalidate() {
+  return false;
+}
+
 export default function Learning({ loaderData }: Route.ComponentProps) {
+  const locale = useLocale();
   const t = useTranslation();
   const { entries } = loaderData;
 
@@ -131,6 +142,13 @@ export default function Learning({ loaderData }: Route.ComponentProps) {
             ))}
           </div>
         )}
+      </section>
+
+      <section className="mt-16">
+        <h2 className="font-display text-2xl font-medium tracking-tight">
+          {t.learning.sections.archive}
+        </h2>
+        <LearningArchive entries={entries} locale={locale} />
       </section>
     </div>
   );
