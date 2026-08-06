@@ -70,9 +70,10 @@ describe("LearningEntryCard", () => {
     expect(screen.getByText("2025-01 – 2025-02")).toBeInTheDocument();
   });
 
-  it("renders a course's verification link", () => {
+  it("renders a course's skills and verification link", () => {
     renderCard(course);
 
+    expect(screen.getByText("REST API design")).toBeInTheDocument();
     expect(screen.getByRole("link")).toHaveAttribute(
       "href",
       "https://example.com/verify",

@@ -3,6 +3,7 @@ import { Card } from "~/components/ui/card";
 import { ExternalLink } from "~/components/ui/external-link";
 import { Tag } from "~/components/ui/tag";
 import { useTranslation } from "~/i18n/use-translation";
+import { SkillTag } from "./skill-tag";
 
 interface LearningEntryCardProps {
   entry: LearningEntry;
@@ -63,6 +64,14 @@ export function LearningEntryCard({ entry }: LearningEntryCardProps) {
         <p className="text-ink/70 dark:text-ink-dark/70 mt-2 text-sm">
           {t.learning.hours}: {entry.hours}
         </p>
+      )}
+
+      {entry.skills.length > 0 && (
+        <div className="mt-4 flex flex-wrap gap-2">
+          {entry.skills.map((skill) => (
+            <SkillTag key={skill.slug} skill={skill} />
+          ))}
+        </div>
       )}
 
       {entry.verificationUrl && (
