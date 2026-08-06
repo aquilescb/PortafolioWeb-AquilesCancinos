@@ -93,6 +93,9 @@ async function main(): Promise<void> {
   let experienceCount = 0;
   let educationCount = 0;
   let milestoneCount = 0;
+  let skillCount = 0;
+  let courseCount = 0;
+  let certificationCount = 0;
 
   try {
     // Importing these modules parses every entity (and, transitively, every
@@ -103,10 +106,16 @@ async function main(): Promise<void> {
     const { experiences } = await import("../content/data/experience");
     const { education } = await import("../content/data/education");
     const { milestones } = await import("../content/data/milestones");
+    const { skills } = await import("../content/data/skills");
+    const { courses } = await import("../content/data/courses");
+    const { certifications } = await import("../content/data/certifications");
     projectCount = projects.length;
     experienceCount = experiences.length;
     educationCount = education.length;
     milestoneCount = milestones.length;
+    skillCount = skills.length;
+    courseCount = courses.length;
+    certificationCount = certifications.length;
     errors.push(...checkCaseStudyFiles(projects));
     errors.push(...checkMilestoneBodyFiles(milestones));
   } catch (error) {
@@ -127,7 +136,8 @@ async function main(): Promise<void> {
   console.log(
     `✓ content validation passed (${projectCount} project(s), ` +
       `${experienceCount} experience(s), ${educationCount} education entry(ies), ` +
-      `${milestoneCount} milestone(s))`,
+      `${milestoneCount} milestone(s), ${skillCount} skill(s), ` +
+      `${courseCount} course(s), ${certificationCount} certification(s))`,
   );
 }
 
