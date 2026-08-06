@@ -186,13 +186,13 @@ describe("milestone-detail meta", () => {
     expect(tags).toContainEqual({
       tagName: "link",
       rel: "canonical",
-      href: "/es/hitos/salta-lab-winner",
+      href: "https://portafolio-web-aquiles-cancinos.vercel.app/es/hitos/salta-lab-winner",
     });
     expect(tags).toContainEqual({
       tagName: "link",
       rel: "alternate",
       hrefLang: "en",
-      href: "/en/milestones/salta-lab-winner",
+      href: "https://portafolio-web-aquiles-cancinos.vercel.app/en/milestones/salta-lab-winner",
     });
   });
 

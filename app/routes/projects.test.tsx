@@ -120,13 +120,13 @@ describe("Projects route", () => {
     expect(tags).toContainEqual({
       tagName: "link",
       rel: "canonical",
-      href: "/es/proyectos",
+      href: "https://portafolio-web-aquiles-cancinos.vercel.app/es/proyectos",
     });
     expect(tags).toContainEqual({
       tagName: "link",
       rel: "alternate",
       hrefLang: "en",
-      href: "/en/projects",
+      href: "https://portafolio-web-aquiles-cancinos.vercel.app/en/projects",
     });
   });
 });

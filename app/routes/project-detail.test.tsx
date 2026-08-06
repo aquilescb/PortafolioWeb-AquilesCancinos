@@ -195,13 +195,13 @@ describe("project-detail meta", () => {
     expect(tags).toContainEqual({
       tagName: "link",
       rel: "canonical",
-      href: "/es/proyectos/inventory-system",
+      href: "https://portafolio-web-aquiles-cancinos.vercel.app/es/proyectos/inventory-system",
     });
     expect(tags).toContainEqual({
       tagName: "link",
       rel: "alternate",
       hrefLang: "en",
-      href: "/en/projects/inventory-system",
+      href: "https://portafolio-web-aquiles-cancinos.vercel.app/en/projects/inventory-system",
     });
   });
 

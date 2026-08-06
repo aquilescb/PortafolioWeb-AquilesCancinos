@@ -2,6 +2,7 @@ import type { Route } from "./+types/root-redirect";
 import { dictionaries } from "@content/i18n/dictionaries";
 import { DEFAULT_LOCALE, LOCALES } from "@content/i18n/locale";
 import { localizedPath } from "@content/i18n/route-map";
+import { absoluteUrl } from "~/seo/site";
 
 const target = localizedPath("home", DEFAULT_LOCALE);
 
@@ -14,7 +15,11 @@ export function meta(_args: Route.MetaArgs) {
   return [
     { title: t.redirect.title },
     { name: "robots", content: "noindex" },
-    { tagName: "link", rel: "canonical", href: target },
+    // Must be absolute — a relative canonical href is invalid per spec (see
+    // `~/seo/alternates`'s note on the same rule). The meta refresh target
+    // and the in-page fallback link below stay relative on purpose: those
+    // are same-site navigations, not the canonical URL declaration.
+    { tagName: "link", rel: "canonical", href: absoluteUrl(target) },
     { httpEquiv: "refresh", content: `0; url=${target}` },
   ];
 }
