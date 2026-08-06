@@ -276,7 +276,10 @@ export interface CareerFilter {
   type?: CareerEntryType;
 }
 
-function experienceToEntry(experience: Experience, locale: Locale): CareerEntry {
+function experienceToEntry(
+  experience: Experience,
+  locale: Locale,
+): CareerEntry {
   return {
     type: "experience",
     slug: experience.slug,

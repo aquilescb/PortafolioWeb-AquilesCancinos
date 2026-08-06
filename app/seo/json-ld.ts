@@ -169,10 +169,7 @@ function milestoneEventJsonLd(milestone: MilestoneLike, locale: Locale) {
   };
 }
 
-function milestoneCreativeWorkJsonLd(
-  milestone: MilestoneLike,
-  locale: Locale,
-) {
+function milestoneCreativeWorkJsonLd(milestone: MilestoneLike, locale: Locale) {
   return {
     "@context": "https://schema.org",
     "@type": "CreativeWork",
