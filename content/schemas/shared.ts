@@ -26,8 +26,8 @@ export const httpsUrlSchema = z
   });
 
 // Entity types that can be referenced by another entity. Extended as later
-// phases introduce new referenceable entities (skill, course...).
-export const ENTITY_TYPES = ["technology", "project"] as const;
+// phases introduce new referenceable entities (course...).
+export const ENTITY_TYPES = ["technology", "project", "skill"] as const;
 export type EntityType = (typeof ENTITY_TYPES)[number];
 
 // A typed pointer to another entity. The content validator resolves every

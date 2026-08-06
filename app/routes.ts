@@ -19,6 +19,7 @@ const routeFiles: Record<RouteKey, string> = {
   home: "routes/home.tsx",
   projects: "routes/projects.tsx",
   career: "routes/career.tsx",
+  learning: "routes/learning.tsx",
   about: "routes/about.tsx",
 };
 

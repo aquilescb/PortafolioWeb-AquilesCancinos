@@ -8,6 +8,7 @@ export const routeMap = {
   home: { es: "", en: "" },
   projects: { es: "proyectos", en: "projects" },
   career: { es: "trayectoria", en: "career" },
+  learning: { es: "formacion", en: "learning" },
   about: { es: "sobre-mi", en: "about" },
 } as const satisfies Record<string, Record<Locale, string>>;
 

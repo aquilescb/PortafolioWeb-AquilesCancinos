@@ -24,6 +24,11 @@ describe("localizedPath", () => {
     expect(localizedPath("career", "en")).toBe("/en/career");
   });
 
+  it("builds the localized learning path for each locale", () => {
+    expect(localizedPath("learning", "es")).toBe("/es/formacion");
+    expect(localizedPath("learning", "en")).toBe("/en/learning");
+  });
+
   it("builds the localized about path for each locale", () => {
     expect(localizedPath("about", "es")).toBe("/es/sobre-mi");
     expect(localizedPath("about", "en")).toBe("/en/about");
@@ -59,10 +64,12 @@ describe("getStaticPaths", () => {
       "/es",
       "/es/proyectos",
       "/es/trayectoria",
+      "/es/formacion",
       "/es/sobre-mi",
       "/en",
       "/en/projects",
       "/en/career",
+      "/en/learning",
       "/en/about",
     ]);
   });

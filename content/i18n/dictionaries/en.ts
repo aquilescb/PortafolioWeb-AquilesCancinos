@@ -22,6 +22,11 @@ export const en: typeof es = {
       description:
         "Aquiles Cancinos' verifiable experience, education and milestones on a timeline.",
     },
+    learning: {
+      title: "Learning — Aquiles Cancinos",
+      description:
+        "Aquiles Cancinos' courses, professional certifications and skills, with evidence and verification links.",
+    },
     about: {
       title: "About — Aquiles Cancinos",
       description:
@@ -35,6 +40,7 @@ export const en: typeof es = {
     skipToContent: "Skip to content",
     projects: "Projects",
     career: "Career",
+    learning: "Learning",
     about: "About",
   },
   theme: {
@@ -159,6 +165,50 @@ export const en: typeof es = {
       organization: "Organization",
       notTranslated:
         "This milestone isn't translated into this language yet. Showing the other available language.",
+    },
+  },
+  learning: {
+    heading: "Learning",
+    intro:
+      "Courses, professional certifications and skills, with evidence and verification links. No percentage bars.",
+    sections: {
+      featured: "Featured",
+      certifications: "Professional certifications",
+      complementary: "Complementary formation",
+      archive: "Full archive",
+    },
+    empty: {
+      featured: "No featured formation loaded yet.",
+      certifications: "No certifications loaded yet.",
+      complementary: "No complementary formation loaded yet.",
+      archive: "No course or certification matches these filters.",
+    },
+    kinds: {
+      course: "Course",
+      certification: "Certification",
+    },
+    status: {
+      "in-progress": "In progress",
+      completed: "Completed",
+    },
+    provider: "Provider",
+    hours: "Hours",
+    issuedAt: "Issued",
+    expiresAt: "Expires",
+    issuer: "Issuer",
+    skills: "Skills",
+    verify: "Verify",
+    filters: {
+      category: "Category",
+      kind: "Type",
+      skill: "Skill",
+      clear: "Clear filters",
+      allCategories: "All categories",
+    },
+    search: {
+      label: "Search the archive",
+      placeholder: "Search by name, provider or category",
+      loading: "Loading search…",
     },
   },
   about: {

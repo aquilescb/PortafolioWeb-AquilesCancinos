@@ -209,6 +209,67 @@ vi.mock("./data/milestones", () => ({
   ],
 }));
 
+vi.mock("./data/skills", () => ({
+  skills: [
+    {
+      slug: "rest-api-design",
+      name: { es: "Diseño de APIs REST", en: "REST API design" },
+      category: "backend",
+      evidence: [{ type: "project", slug: "beta" }],
+    },
+  ],
+}));
+
+vi.mock("./data/courses", () => ({
+  courses: [
+    {
+      slug: "advanced-react-patterns",
+      name: {
+        es: "Patrones avanzados de React",
+        en: "Advanced React patterns",
+      },
+      provider: "Frontend Masters",
+      startDate: "2025-01",
+      endDate: "2025-02",
+      status: "completed",
+      category: "frontend",
+      skills: [{ type: "skill", slug: "rest-api-design" }],
+      relevance: 2,
+      featured: false,
+    },
+    {
+      slug: "ongoing-course",
+      name: { es: "Curso en curso", en: "Ongoing course" },
+      provider: "Coursera",
+      startDate: "2026-01",
+      status: "in-progress",
+      category: "backend",
+      skills: [],
+      relevance: 1,
+      featured: false,
+    },
+  ],
+}));
+
+vi.mock("./data/certifications", () => ({
+  certifications: [
+    {
+      slug: "aws-cloud-practitioner",
+      name: { es: "AWS Cloud Practitioner", en: "AWS Cloud Practitioner" },
+      provider: "AWS",
+      startDate: "2025-03",
+      status: "completed",
+      category: "cloud",
+      skills: [],
+      relevance: 3,
+      featured: true,
+      verificationUrl: "https://example.com/verify",
+      issuedAt: "2025-03-20",
+      issuer: "Amazon Web Services",
+    },
+  ],
+}));
+
 const {
   getFeaturedProjects,
   getAllProjects,
@@ -217,6 +278,7 @@ const {
   getAllPrerenderPaths,
   getCareerTimeline,
   getContact,
+  getLearningEntries,
   getMilestoneBody,
   getMilestoneBySlug,
   hasMilestonePages,
@@ -346,6 +408,44 @@ describe("getCareerTimeline", () => {
   });
 });
 
+describe("getLearningEntries", () => {
+  it("merges courses and certifications, most recent first", () => {
+    const entries = getLearningEntries("en");
+
+    expect(entries.map((entry) => entry.slug)).toEqual([
+      "ongoing-course", // status in-progress, no endDate: sorts by startDate 2026-01
+      "aws-cloud-practitioner", // issuedAt 2025-03-20
+      "advanced-react-patterns", // endDate 2025-02
+    ]);
+  });
+
+  it("resolves the requested locale and marks kind per entry", () => {
+    const entries = getLearningEntries("es");
+    const course = entries.find(
+      (entry) => entry.slug === "advanced-react-patterns",
+    );
+    const certification = entries.find(
+      (entry) => entry.slug === "aws-cloud-practitioner",
+    );
+
+    expect(course?.kind).toBe("course");
+    expect(course?.name).toBe("Patrones avanzados de React");
+    expect(certification?.kind).toBe("certification");
+    expect(certification?.issuer).toBe("Amazon Web Services");
+  });
+
+  it("resolves a course's skill references to localized names", () => {
+    const entries = getLearningEntries("en");
+    const course = entries.find(
+      (entry) => entry.slug === "advanced-react-patterns",
+    );
+
+    expect(course?.skills).toEqual([
+      { slug: "rest-api-design", name: "REST API design" },
+    ]);
+  });
+});
+
 describe("hasMilestonePages", () => {
   it("is true once at least one milestone declares hasOwnPage", () => {
     expect(hasMilestonePages()).toBe(true);
@@ -400,9 +500,10 @@ describe("getAllPrerenderPaths", () => {
     // Only "salta-lab-winner" has hasOwnPage: true — "no-own-page" is
     // deliberately excluded.
     expect(paths).not.toContain("/es/hitos/no-own-page");
-    // 9 static routes (root + home/projects/career/about x 2 locales) + 5
-    // projects x 2 locales + 1 milestone with hasOwnPage x 2 locales = 21
-    expect(paths).toHaveLength(21);
+    // 11 static routes (root + home/projects/career/learning/about x 2
+    // locales) + 5 projects x 2 locales + 1 milestone with hasOwnPage x 2
+    // locales = 23
+    expect(paths).toHaveLength(23);
   });
 });
 
